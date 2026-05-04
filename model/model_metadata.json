@@ -1,0 +1,74 @@
+{
+  "model_name": "Random Forest",
+  "feature_cols": [
+    "Child_Age",
+    "Child_Gender",
+    "Lack_of_School_Material",
+    "Lack_of_School_Fees",
+    "Job_opportunity",
+    "Pregnancy",
+    "Family_conflicts",
+    "Drug_abuse",
+    "Lack_of_motivation",
+    "Illness",
+    "Absenteism",
+    "Bad_Discipline",
+    "Performance",
+    "Social_activity",
+    "Year_of_Study"
+  ],
+  "cat_cols": [
+    "Child_Age",
+    "Child_Gender",
+    "Performance",
+    "Social_activity",
+    "Year_of_Study"
+  ],
+  "num_cols": [
+    "Lack_of_School_Material",
+    "Lack_of_School_Fees",
+    "Job_opportunity",
+    "Pregnancy",
+    "Family_conflicts",
+    "Drug_abuse",
+    "Lack_of_motivation",
+    "Illness",
+    "Absenteism",
+    "Bad_Discipline"
+  ],
+  "target": "Dropped_out",
+  "accuracy": 0.985,
+  "f1_score": 0.9886,
+  "roc_auc": 0.999,
+  "train_size": 1600,
+  "test_size": 400,
+  "cat_values": {
+    "Child_Age": [
+      "13-Jun",
+      "14 - 16",
+      "17 - 19",
+      "20 - 21"
+    ],
+    "Child_Gender": [
+      "Female",
+      "Male"
+    ],
+    "Performance": [
+      "0-40",
+      "41-50",
+      "51-60",
+      "61-70",
+      "71-100"
+    ],
+    "Social_activity": [
+      "Dance",
+      "Other",
+      "Sport"
+    ],
+    "Year_of_Study": [
+      "Lower  Secondary",
+      "Primary",
+      "Upper  Secondary"
+    ]
+  }
+}

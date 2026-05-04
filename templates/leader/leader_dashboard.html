@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Local Leader Dashboard — EduGuard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --ink:#0d1f1a;--teal:#0a6b55;--teal-dk:#085c49;--teal-lt:#e6f4f0;--teal-md:#b3ddd4;
+  --gold:#c8973a;--muted:#5a7068;--border:#d0deda;--bg:#f5f8f7;--white:#fff;
+  --red:#c0392b;--red-lt:#fdecea;--amber:#d97706;--amber-lt:#fffbeb;
+  --green:#1a7a4a;--green-lt:#e8f5ee;--sidebar-w:220px;
+  --leader:#1a2e4a;  /* navy — distinct from teacher teal and principal ink */
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);display:flex;min-height:100vh}
+
+/* Sidebar — navy theme */
+.sidebar{width:var(--sidebar-w);background:var(--leader);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100}
+.sidebar-brand{padding:24px 20px 20px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:10px}
+.sidebar-brand .icon{width:36px;height:36px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.sidebar-brand .name{font-family:'DM Serif Display',serif;color:#fff;font-size:16px;line-height:1.2}
+.sidebar-brand .sub{font-size:10px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.07em}
+.sidebar-user{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidebar-user .u-name{font-size:13px;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-user .u-role{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
+.sidebar-user .u-sector{font-size:11px;color:rgba(255,255,255,.55);margin-top:1px}
+nav{flex:1;padding:12px 10px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;color:rgba(255,255,255,.6);font-size:13.5px;cursor:pointer;text-decoration:none;transition:background .15s,color .15s;margin-bottom:2px}
+.nav-item:hover{background:rgba(255,255,255,.08);color:#fff}
+.nav-item.active{background:var(--gold);color:var(--leader);font-weight:500}
+.nav-item .ni{font-size:17px;width:22px;text-align:center;flex-shrink:0}
+.sidebar-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,.1)}
+.sidebar-footer a{font-size:12px;color:rgba(255,255,255,.4);text-decoration:none;display:flex;align-items:center;gap:6px}
+.sidebar-footer a:hover{color:#fff}
+
+/* Main */
+.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-title{font-family:'DM Serif Display',serif;font-size:18px}
+.topbar-meta{font-size:12px;color:var(--muted)}
+.topbar-badge{background:#e8f0fa;color:var(--leader);font-size:11px;padding:4px 10px;border-radius:20px;font-weight:500}
+.content{padding:32px}
+
+/* Cards */
+.card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px}
+.card-title{font-size:15px;font-weight:500;margin-bottom:4px}
+.card-sub{font-size:13px;color:var(--muted)}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.kpi-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.kpi{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
+.kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:6px}
+.kpi-val{font-family:'DM Serif Display',serif;font-size:32px;color:var(--ink);line-height:1}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.kpi.danger .kpi-val{color:var(--red)}
+.kpi.warn   .kpi-val{color:var(--amber)}
+.kpi.good   .kpi-val{color:var(--green)}
+
+/* Flash */
+.flash{padding:11px 16px;border-radius:8px;font-size:13px;margin-bottom:18px;line-height:1.5}
+.flash.error  {background:var(--red-lt);  color:var(--red);  border-left:3px solid var(--red)}
+.flash.success{background:var(--green-lt);color:var(--green);border-left:3px solid var(--green)}
+.flash.info   {background:var(--teal-lt); color:var(--teal); border-left:3px solid var(--teal)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:background .15s,transform .1s;text-decoration:none}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--leader);color:#fff}
+.btn-primary:hover{background:#142236}
+.btn-secondary{background:var(--bg);color:var(--ink);border:1px solid var(--border)}
+.btn-secondary:hover{background:#e8f0fa;border-color:var(--leader)}
+.btn-sm{padding:6px 12px;font-size:12px}
+
+/* Selector */
+.selector-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.select-wrap{position:relative}
+.select-wrap select{padding:9px 36px 9px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);background:var(--bg);appearance:none;outline:none;cursor:pointer;transition:border-color .15s;min-width:200px}
+.select-wrap select:focus{border-color:var(--leader)}
+.select-wrap::after{content:'▾';position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;font-size:13px}
+
+/* Section divider */
+.section-divider{display:flex;align-items:center;gap:12px;margin:24px 0 16px}
+.section-divider span{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);white-space:nowrap}
+.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* Charts */
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.chart-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px}
+.chart-title{font-size:13px;font-weight:500;margin-bottom:14px}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:500}
+.badge-high  {background:var(--red-lt);  color:var(--red)}
+.badge-medium{background:var(--amber-lt);color:var(--amber)}
+.badge-low   {background:var(--green-lt);color:var(--green)}
+
+/* School cards grid */
+.school-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px}
+.school-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:18px 20px;cursor:pointer;transition:border-color .15s,box-shadow .15s;text-decoration:none;display:block}
+.school-card:hover{border-color:var(--leader);box-shadow:0 2px 8px rgba(26,46,74,.08)}
+.school-card .sc-name{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:4px}
+.school-card .sc-meta{font-size:12px;color:var(--muted);margin-bottom:8px}
+.school-card .sc-kpis{display:flex;gap:14px;font-size:12px}
+.school-card .sc-kpis .k{color:var(--muted)}.school-card .sc-kpis .k span{font-weight:500;color:var(--ink)}
+.school-card .sc-risk{display:flex;gap:6px;margin-top:8px}
+
+/* Table */
+.table-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:var(--bg);padding:10px 14px;text-align:left;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
+tbody td{padding:9px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#f0f4fa}
+
+/* Report history card */
+.report-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.report-card:hover{border-color:var(--leader)}
+.rc-meta{font-size:12px;color:var(--muted);margin-top:3px}
+.rc-stats{display:flex;gap:16px;font-size:12px;color:var(--muted);margin-top:8px}
+.rc-stats span{font-weight:500;color:var(--ink)}
+
+/* Help steps */
+.step{display:flex;gap:16px;margin-bottom:20px}
+.step-num{width:32px;height:32px;border-radius:50%;background:var(--leader);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
+.step-body h4{font-size:14px;font-weight:500;margin-bottom:4px}
+.step-body p{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* Social */
+.social-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+.social-pill{display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:13px;text-decoration:none;color:var(--ink);transition:border-color .15s}
+.social-pill:hover{border-color:var(--leader);color:var(--leader)}
+
+/* Welcome */
+.welcome-hero{display:flex;align-items:center;gap:20px;margin-bottom:24px}
+.avatar{width:60px;height:60px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;background:var(--leader)}
+.welcome-hero h2{font-family:'DM Serif Display',serif;font-size:26px}
+.welcome-hero p{font-size:14px;color:var(--muted);margin-top:4px}
+
+/* Empty */
+.empty{text-align:center;padding:48px 20px}
+.empty-icon{font-size:48px;margin-bottom:12px}
+.empty h3{font-size:16px;margin-bottom:6px}
+.empty p{font-size:13px;color:var(--muted)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.content>*{animation:fadeUp .3s ease both}
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="icon">🎓</div>
+    <div>
+      <div class="name">EduGuard</div>
+      <div class="sub">Rwanda</div>
+    </div>
+  </div>
+  <div class="sidebar-user">
+    <div class="u-name">{{ user.full_name }}</div>
+    <div class="u-role">Local Leader</div>
+    <div class="u-sector">{{ user.sector }} sector</div>
+  </div>
+  <nav>
+    <a href="{{ url_for('leader.home') }}"             class="nav-item {% if active_tab=='home'     %}active{% endif %}"><span class="ni">🏠</span> Home</a>
+    <a href="{{ url_for('leader.current_report') }}"   class="nav-item {% if active_tab=='current'  %}active{% endif %}"><span class="ni">📊</span> Current report</a>
+    <a href="{{ url_for('leader.browse_schools') }}"   class="nav-item {% if active_tab=='schools'  %}active{% endif %}"><span class="ni">🏫</span> Schools</a>
+    <a href="{{ url_for('leader.previous_reports') }}" class="nav-item {% if active_tab=='previous' %}active{% endif %}"><span class="ni">🗂️</span> Previous reports</a>
+    <a href="{{ url_for('leader.contact') }}"          class="nav-item {% if active_tab=='contact'  %}active{% endif %}"><span class="ni">✉️</span> Contact</a>
+    <a href="{{ url_for('leader.help_page') }}"        class="nav-item {% if active_tab=='help'     %}active{% endif %}"><span class="ni">❓</span> Help</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="{{ url_for('auth.logout') }}">⬅ Sign out</a>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="main">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">
+        {% if active_tab=='home'     %}Sector overview
+        {% elif active_tab=='current'%}Current report
+        {% elif active_tab=='schools' %}Schools overview
+        {% elif active_tab=='previous'%}Previous reports
+        {% elif active_tab=='contact'%}Contact us
+        {% else %}Help &amp; guide{% endif %}
+      </div>
+      <div class="topbar-meta">{{ user.sector }} sector</div>
+    </div>
+    <span class="topbar-badge">Local Leader</span>
+  </div>
+
+  <div class="content">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <!-- ══════════════════════════════════════════
+         HOME
+    ══════════════════════════════════════════ -->
+    {% if active_tab == 'home' %}
+    <div class="card">
+      <div class="welcome-hero">
+        <div class="avatar">🏛️</div>
+        <div>
+          <h2>Hello, {{ user.full_name.split()[0] }}!</h2>
+          <p>{{ user.sector }} sector · Local Leader</p>
+        </div>
+      </div>
+      <p style="font-size:14px;color:var(--muted);line-height:1.8;max-width:640px">
+        Welcome to your sector dashboard. Use <strong>Current Report</strong> to select a school and view its dropout risk summary, or scroll down for a full sector-wide overview across all schools. Download the complete sector report at any time for offline analysis.
+      </p>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Sector</div><div class="kpi-val" style="font-size:18px;margin-top:6px">{{ user.sector }}</div></div>
+      <div class="kpi"><div class="kpi-label">Registered schools</div><div class="kpi-val">{{ num_schools }}</div><div class="kpi-sub">In your sector</div></div>
+      <div class="kpi"><div class="kpi-label">Role</div><div class="kpi-val" style="font-size:18px;margin-top:6px">Local Leader</div></div>
+      <div class="kpi"><div class="kpi-label">Coverage</div><div class="kpi-val" style="font-size:18px;margin-top:6px">P1 – P6</div><div class="kpi-sub">All primary levels</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Quick actions</div>
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+        <a href="{{ url_for('leader.current_report') }}"        class="btn btn-primary">📊 View current report</a>
+        <a href="{{ url_for('leader.browse_schools') }}"       class="btn btn-secondary">🏫 Browse schools</a>
+        <a href="{{ url_for('leader.previous_reports') }}"      class="btn btn-secondary">🗂️ Previous reports</a>
+        <a href="{{ url_for('leader.download_sector_report') }}" class="btn btn-secondary">⬇ Download sector CSV</a>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SCHOOLS
+    ══════════════════════════════════════════ -->
+    {% elif active_tab == 'schools' %}
+    <div class="card">
+      <div class="welcome-hero">
+        <div class="avatar">🏫</div>
+        <div>
+          <h2>Schools in {{ user.sector }} sector</h2>
+          <p>Browse all registered schools and request access to a school's data.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title">Your school requests</div>
+      <div class="card-sub">Current permission status for your selected schools.</div>
+      <div style="margin-top:14px">
+        <div class="kpi-grid">
+          <div class="kpi"><div class="kpi-label">Requested schools</div><div class="kpi-val">{{ user.requested_school_name or 'None' }}</div></div>
+          <div class="kpi"><div class="kpi-label">Access status</div><div class="kpi-val">{{ user.access_status|capitalize }}</div></div>
+          <div class="kpi"><div class="kpi-label">Available schools</div><div class="kpi-val">{{ all_schools|length }}</div></div>
+        </div>
+      </div>
+    </div>
+    <form method="POST" action="{{ url_for('leader.browse_schools') }}">
+      <div class="school-grid">
+        {% for school in school_info %}
+        <div class="school-card">
+          <div class="sc-name">{{ school.name }}</div>
+          <div class="sc-meta">{{ school.num_classes }} class{{ 'es' if school.num_classes != 1 }} · {{ school.num_teachers }} teacher{{ 's' if school.num_teachers != 1 }}</div>
+          <div class="sc-kpis">
+            <div class="k">Predictions: <span>{{ school.num_predictions }}</span></div>
+            <div class="k">Status: <span>{{ school.access_status }}</span></div>
+          </div>
+          <div class="sc-risk">
+            <span class="badge badge-high">{{ school.num_predictions }} reports</span>
+          </div>
+          <div style="margin-top:12px;">
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;">
+              <input type="checkbox" name="school_names" value="{{ school.name }}" {% if school.access_status in ['approved', 'pending'] %}checked disabled{% endif %}>
+              Request access
+            </label>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div style="margin-top:20px;text-align:center">
+        <button type="submit" class="btn btn-primary">Submit Access Requests</button>
+      </div>
+    </form>
+
+    <!-- ══════════════════════════════════════════
+         CURRENT REPORT
+    ══════════════════════════════════════════ -->
+    {% elif active_tab == 'current' %}
+
+    {% if user.access_status != 'approved' %}
+    <div class="card" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div>
+        <div class="card-title">Request access to a class report</div>
+        <div class="card-sub">Select a class in your sector to ask the principal for permission.</div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:24px 20px 18px">
+      <form method="POST" action="{{ url_for('leader.current_report') }}" class="selector-bar" style="align-items:flex-start">
+        <div class="select-wrap" style="flex:1;min-width:260px">
+          <select name="school_class">
+            <option value="">Select school and class</option>
+            {% for school, cls in class_options %}
+            <option value="{{ school }}||{{ cls }}" {% if user.requested_school_name == school and user.requested_class_name == cls %}selected{% endif %}>{{ school }} — {{ cls }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">📩 Request access</button>
+      </form>
+    </div>
+
+    {% if user.requested_school_name %}
+    <div class="card"><div class="empty"><div class="empty-icon">⏳</div><h3>Request {{ user.access_status|capitalize }}</h3><p>You have requested access for {{ user.requested_school_name }} — {{ user.requested_class_name }}. The principal will review your request.</p></div></div>
+    {% else %}
+    <div class="card"><div class="empty"><div class="empty-icon">🛑</div><h3>Access not granted</h3><p>Select a class above to request permission from the principal. You cannot view reports until your request is approved.</p></div></div>
+    {% endif %}
+
+    {% else %}
+
+    <!-- School selector -->
+    <div class="card" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div>
+        <div class="card-title">Browse approved school</div>
+        <div class="card-sub">View the report for the school that you have been granted access to.</div>
+      </div>
+      <form method="POST" action="{{ url_for('leader.current_report') }}" class="selector-bar">
+        <div class="select-wrap">
+          <select name="school_name">
+            <option value="">Select school</option>
+            {% for s in schools %}
+            <option value="{{ s }}" {% if s == selected %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">🔍 Check updated report</button>
+      </form>
+    </div>
+
+    <!-- Per-school report -->
+    {% if selected and school_agg %}
+    <div class="section-divider"><span>{{ selected }} — school report</span></div>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Total students</div><div class="kpi-val">{{ school_agg.total_students }}</div><div class="kpi-sub">Across {{ school_agg.count }} classes</div></div>
+      <div class="kpi danger"><div class="kpi-label">At dropout risk</div><div class="kpi-val">{{ school_agg.dropout_count }}</div>
+        <div class="kpi-sub">{{ "%.0f"|format(school_agg.dropout_count / school_agg.total_students * 100) if school_agg.total_students }}%</div></div>
+      <div class="kpi warn"><div class="kpi-label">High risk</div><div class="kpi-val">{{ school_agg.high_risk }}</div></div>
+      <div class="kpi good"><div class="kpi-label">Not at risk</div><div class="kpi-val">{{ school_agg.non_dropout }}</div></div>
+    </div>
+    <div class="kpi-grid-3">
+      <div class="kpi warn"><div class="kpi-label">Medium risk</div><div class="kpi-val">{{ school_agg.medium_risk }}</div></div>
+      <div class="kpi good"><div class="kpi-label">Low risk</div><div class="kpi-val">{{ school_agg.low_risk }}</div></div>
+      <div class="kpi"><div class="kpi-label">Male / Female</div><div class="kpi-val" style="font-size:18px;margin-top:6px">{{ school_agg.male_count }} / {{ school_agg.female_count }}</div></div>
+    </div>
+    <div class="charts-row">
+      <div class="chart-card"><div class="chart-title">Dropout split — {{ selected }}</div><canvas id="schoolSplitChart" height="200"></canvas></div>
+      <div class="chart-card"><div class="chart-title">Risk by class — {{ selected }}</div><canvas id="schoolClassChart" height="200"></canvas></div>
+    </div>
+
+    <!-- Class breakdown table for selected school -->
+    {% if school_preds %}
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:16px 20px;border-bottom:1px solid var(--border)">
+        <div class="card-title">{{ selected }} — class breakdown</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Class</th><th>Students</th><th>At risk</th><th>High</th><th>Medium</th><th>Low</th><th>Male</th><th>Female</th><th>Last updated</th><th></th></tr></thead>
+          <tbody>
+            {% for p in school_preds %}
+            <tr>
+              <td style="font-weight:500">{{ p.class_name }}</td>
+              <td>{{ p.total_students }}</td>
+              <td style="color:var(--red);font-weight:500">{{ p.dropout_count }}</td>
+              <td><span class="badge badge-high">{{ p.high_risk }}</span></td>
+              <td><span class="badge badge-medium">{{ p.medium_risk }}</span></td>
+              <td><span class="badge badge-low">{{ p.low_risk }}</span></td>
+              <td>{{ p.male_count }}</td>
+              <td>{{ p.female_count }}</td>
+              <td style="font-size:12px;color:var(--muted)">{{ p.predicted_at.strftime('%d %b %Y') }}</td>
+              <td><a href="{{ url_for('leader.download_report', pred_id=p.id) }}" class="btn btn-secondary btn-sm">⬇</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
+    {% elif selected and not school_agg %}
+    <div class="card"><div class="empty"><div class="empty-icon">🏫</div><h3>No data for {{ selected }}</h3><p>No predictions have been generated for this school yet.</p></div></div>
+    {% endif %}
+
+    <!-- School-wide summary -->
+    {% if sector_agg %}
+    <div class="section-divider"><span>School summary — {{ user.requested_school_name or selected }}</span></div>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Total students</div><div class="kpi-val">{{ sector_agg.total_students }}</div><div class="kpi-sub">Across {{ schools|length }} classes</div></div>
+      <div class="kpi danger"><div class="kpi-label">At dropout risk</div><div class="kpi-val">{{ sector_agg.dropout_count }}</div>
+        <div class="kpi-sub">{{ "%.0f"|format(sector_agg.dropout_count / sector_agg.total_students * 100) if sector_agg.total_students }}%</div></div>
+      <div class="kpi warn"><div class="kpi-label">High risk</div><div class="kpi-val">{{ sector_agg.high_risk }}</div></div>
+      <div class="kpi good"><div class="kpi-label">Not at risk</div><div class="kpi-val">{{ sector_agg.non_dropout }}</div></div>
+    </div>
+
+    <!-- School summary cards -->
+    <div class="card-title" style="margin-bottom:14px">Breakdown by school</div>
+    <div class="school-grid">
+      {% for s in school_summaries %}
+      <a href="{{ url_for('leader.current_report') }}?school_name={{ s.school_name }}" class="school-card">
+        <div class="sc-name">{{ s.school_name }}</div>
+        <div class="sc-meta">{{ s.classes }} class{{ 'es' if s.classes != 1 }} · {{ s.total_students }} students</div>
+        <div class="sc-kpis">
+          <div class="k">At risk: <span style="color:var(--red)">{{ s.dropout_count }}</span></div>
+          <div class="k">M/F: <span>{{ s.male_count }}/{{ s.female_count }}</span></div>
+        </div>
+        <div class="sc-risk">
+          <span class="badge badge-high">H: {{ s.high_risk }}</span>
+          <span class="badge badge-medium">M: {{ s.medium_risk }}</span>
+          <span class="badge badge-low">L: {{ s.low_risk }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+    <!-- Sector charts -->
+    <div class="charts-row">
+      <div class="chart-card"><div class="chart-title">Sector-wide dropout split</div><canvas id="sectorSplitChart" height="200"></canvas></div>
+      <div class="chart-card"><div class="chart-title">Risk distribution by school</div><canvas id="sectorSchoolChart" height="200"></canvas></div>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;margin-bottom:20px">
+      <a href="{{ url_for('leader.download_sector_report') }}" class="btn btn-secondary">⬇ Download full sector report</a>
+    </div>
+
+    {% else %}
+    <div class="card"><div class="empty"><div class="empty-icon">📊</div><h3>No sector data yet</h3><p>Schools in your sector need to generate predictions before the sector report is available.</p></div></div>
+    {% endif %}
+
+    {% endif %}
+
+    <!-- Charts -->
+    {% if sector_agg or (selected and school_agg) %}
+    <script>
+    const C = { navy:'#1a2e4a', red:'#c0392b', amber:'#d97706', green:'#1a7a4a', teal:'#0a6b55' };
+    const baseOpts = { plugins:{ legend:{ position:'bottom', labels:{ font:{size:12}, padding:12 }}}, responsive:true };
+
+    {% if selected and school_agg %}
+    new Chart(document.getElementById('schoolSplitChart'), {
+      type:'doughnut',
+      data:{ labels:['At risk','Not at risk'], datasets:[{ data:[{{ school_agg.dropout_count }},{{ school_agg.non_dropout }}], backgroundColor:[C.red,C.green], borderWidth:0 }]},
+      options: baseOpts
+    });
+    const classLabels = {{ school_preds | map(attribute='class_name') | list | tojson }};
+    const classHigh   = {{ school_preds | map(attribute='high_risk')   | list | tojson }};
+    const classMed    = {{ school_preds | map(attribute='medium_risk')  | list | tojson }};
+    const classLow    = {{ school_preds | map(attribute='low_risk')     | list | tojson }};
+    new Chart(document.getElementById('schoolClassChart'), {
+      type:'bar',
+      data:{ labels: classLabels, datasets:[
+        { label:'High',   data: classHigh, backgroundColor: C.red,   borderRadius:4 },
+        { label:'Medium', data: classMed,  backgroundColor: C.amber, borderRadius:4 },
+        { label:'Low',    data: classLow,  backgroundColor: C.green, borderRadius:4 },
+      ]},
+      options:{ ...baseOpts, scales:{ x:{ stacked:true }, y:{ stacked:true, beginAtZero:true, grid:{ color:'#eee' }}}}
+    });
+    {% endif %}
+
+    {% if sector_agg %}
+    new Chart(document.getElementById('sectorSplitChart'), {
+      type:'doughnut',
+      data:{ labels:['At risk','Not at risk'], datasets:[{ data:[{{ sector_agg.dropout_count }},{{ sector_agg.non_dropout }}], backgroundColor:[C.red,C.green], borderWidth:0 }]},
+      options: baseOpts
+    });
+    const schoolLabels = {{ school_summaries | map(attribute='school_name') | list | tojson }};
+    const schoolHigh   = {{ school_summaries | map(attribute='high_risk')   | list | tojson }};
+    const schoolMed    = {{ school_summaries | map(attribute='medium_risk')  | list | tojson }};
+    const schoolLow    = {{ school_summaries | map(attribute='low_risk')     | list | tojson }};
+    new Chart(document.getElementById('sectorSchoolChart'), {
+      type:'bar',
+      data:{ labels: schoolLabels, datasets:[
+        { label:'High',   data: schoolHigh, backgroundColor: C.red,   borderRadius:4 },
+        { label:'Medium', data: schoolMed,  backgroundColor: C.amber, borderRadius:4 },
+        { label:'Low',    data: schoolLow,  backgroundColor: C.green, borderRadius:4 },
+      ]},
+      options:{ ...baseOpts, scales:{ x:{ stacked:true }, y:{ stacked:true, beginAtZero:true, grid:{ color:'#eee' }}}}
+    });
+    {% endif %}
+    </script>
+    {% endif %}
+
+    <!-- ══════════════════════════════════════════
+         PREVIOUS REPORTS
+    ══════════════════════════════════════════ -->
+    {% elif active_tab == 'previous' %}
+    <div class="card" style="padding:16px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <span style="font-size:13px;color:var(--muted)">Filter by school:</span>
+      <form method="GET" action="{{ url_for('leader.previous_reports') }}" class="selector-bar" style="margin:0">
+        <div class="select-wrap">
+          <select name="school_name" onchange="this.form.submit()">
+            <option value="">All schools</option>
+            {% for s in schools %}
+            <option value="{{ s }}" {% if s == selected %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </form>
+      {% if selected %}<a href="{{ url_for('leader.previous_reports') }}" class="btn btn-secondary btn-sm">✕ Clear</a>{% endif %}
+    </div>
+
+    {% if predictions %}
+      {% for p in predictions %}
+      <div class="report-card">
+        <div>
+          <div style="font-size:14px;font-weight:500">{{ p.school_name }} · {{ p.class_name }} · {{ p.predicted_at.strftime('%d %B %Y, %H:%M') }}</div>
+          <div class="rc-meta">{{ user.sector }} sector</div>
+          <div class="rc-stats">
+            <div>Students: <span>{{ p.total_students }}</span></div>
+            <div>At risk: <span style="color:var(--red)">{{ p.dropout_count }}</span></div>
+            <div>High: <span style="color:var(--red)">{{ p.high_risk }}</span></div>
+            <div>Medium: <span style="color:var(--amber)">{{ p.medium_risk }}</span></div>
+          </div>
+        </div>
+        <a href="{{ url_for('leader.download_report', pred_id=p.id) }}" class="btn btn-secondary btn-sm">⬇ Download</a>
+      </div>
+      {% endfor %}
+    {% else %}
+    <div class="card"><div class="empty"><div class="empty-icon">🗂️</div><h3>No reports found</h3><p>{% if selected %}No reports for {{ selected }} yet.{% else %}No predictions have been made in your sector yet.{% endif %}</p></div></div>
+    {% endif %}
+
+    <!-- ══════════════════════════════════════════
+         CONTACT
+    ══════════════════════════════════════════ -->
+    {% elif active_tab == 'contact' %}
+    <div class="card">
+      <div class="card-title">Find us on social media</div>
+      <div class="social-row" style="margin-top:14px">
+        <a href="https://x.com/IreraJosue" class="social-pill">🐦 Twitter / X</a>
+        <a href="#" class="social-pill">💼 LinkedIn</a>
+        <a href="https://www.facebook.com/lrerajosue.arturo/" class="social-pill">📘 Facebook</a>
+        <a href="https://www.instagram.com/irera.josue/" class="social-pill">📸 Instagram</a>
+        <a href="mailto:beaknyamunini@gmail.com" class="social-pill">✉️ support@eduguard.rw</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:18px">Send a message</div>
+      <form method="POST" action="{{ url_for('leader.contact') }}">
+        <div style="margin-bottom:14px"><label style="display:block;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:7px">Subject</label><input type="text" name="subject" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none" placeholder="e.g. Technical issue, Feature request…"></div>
+        <div style="margin-bottom:16px"><label style="display:block;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:7px">Message</label><textarea name="message" rows="5" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;resize:vertical;outline:none" placeholder="Describe your issue or feedback…"></textarea></div>
+        <button type="submit" class="btn btn-primary">Send message</button>
+      </form>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         HELP
+    ══════════════════════════════════════════ -->
+    {% elif active_tab == 'help' %}
+    <div class="card">
+      <div class="card-title" style="margin-bottom:20px">How to use EduGuard as a Local Leader</div>
+      <div class="step"><div class="step-num">1</div><div class="step-body"><h4>View a school report</h4><p>Go to <strong>Current Report</strong>, select a school from the dropdown, and click <strong>Check updated report</strong>. This shows the aggregated results across all classes in that school — total students, risk counts by level, and a class-by-class breakdown table.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><h4>View the sector-wide summary</h4><p>Scroll below the school selector on the Current Report tab to see the full sector overview — totals across every school in your sector, plus clickable school cards showing per-school risk levels at a glance.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Identify high-risk schools</h4><p>The school summary cards are clickable — click any card to jump straight to that school's detailed class breakdown. Schools with a high proportion of at-risk students will show prominent High risk counts in red.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Download reports</h4><p>Download a single class report as CSV from the class breakdown table, or click <strong>Download full sector report</strong> to get a merged CSV of all classes across all schools in your sector, with school and class name columns included.</p></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-body"><h4>Browse historical reports</h4><p>Go to <strong>Previous Reports</strong> to see all past predictions across your sector. Use the school filter to narrow results and download any individual report as CSV.</p></div></div>
+    </div>
+    {% endif %}
+
+  </div>
+</main>
+</body>
+</html>

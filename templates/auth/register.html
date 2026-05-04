@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account — EduGuard Rwanda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:     #0d1f1a;
+    --teal:    #0a6b55;
+    --teal-lt: #e6f4f0;
+    --gold:    #c8973a;
+    --muted:   #5a7068;
+    --border:  #d0deda;
+    --bg:      #f5f8f7;
+    --white:   #ffffff;
+    --red:     #c0392b;
+    --red-lt:  #fdecea;
+    --green:   #1a7a4a;
+    --green-lt:#e8f5ee;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 48px 24px;
+  }
+  .page { width: 100%; max-width: 560px; }
+
+  /* header */
+  .page-header { text-align: center; margin-bottom: 36px; animation: fadeUp .4s ease both; }
+  .brand-link { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; margin-bottom: 24px; }
+  .brand-icon { width: 40px; height: 40px; background: var(--teal); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .brand-name { font-family: 'DM Serif Display', serif; color: var(--ink); font-size: 18px; }
+  .page-header h1 { font-family: 'DM Serif Display', serif; font-size: 30px; color: var(--ink); margin-bottom: 6px; }
+  .page-header p  { font-size: 14px; color: var(--muted); }
+
+  /* card */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 36px;
+    animation: fadeUp .45s .05s ease both;
+  }
+
+  /* flash */
+  .flash { padding: 11px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
+  .flash.error   { background: var(--red-lt);   color: var(--red);   border-left: 3px solid var(--red); }
+  .flash.success { background: var(--green-lt); color: var(--green); border-left: 3px solid var(--green); }
+  .flash.info    { background: var(--teal-lt);  color: var(--teal);  border-left: 3px solid var(--teal); }
+
+  /* section headings */
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin: 24px 0 18px;
+  }
+  .section-label:first-child { margin-top: 0; }
+
+  /* grid */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* fields */
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 7px; }
+  .field label .req { color: var(--teal); }
+  .field input, .field select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--bg);
+    transition: border-color .18s, box-shadow .18s;
+    outline: none;
+    appearance: none;
+  }
+  .field input:focus, .field select:focus {
+    border-color: var(--teal);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(10,107,85,.1);
+  }
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '▾';
+    position: absolute;
+    right: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+    font-size: 13px;
+  }
+
+  /* role selector pills */
+  .role-pills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+  .role-pill input[type=radio] { display: none; }
+  .role-pill label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color .18s, background .18s;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .role-pill label .icon { font-size: 22px; }
+  .role-pill input:checked + label {
+    border-color: var(--teal);
+    background: var(--teal-lt);
+    color: var(--teal);
+  }
+  .role-pill label:hover { border-color: var(--teal); }
+
+  /* conditional role fields */
+  .role-fields { display: none; }
+  .role-fields.visible { display: block; }
+
+  /* password strength */
+  .pw-hint { font-size: 11px; color: var(--muted); margin-top: 5px; }
+
+  /* submit */
+  .btn-primary {
+    width: 100%;
+    padding: 13px;
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background .18s, transform .12s;
+  }
+  .btn-primary:hover { background: #085c49; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .form-footer { margin-top: 20px; text-align: center; font-size: 13px; color: var(--muted); }
+  .form-footer a { color: var(--teal); text-decoration: none; font-weight: 500; }
+  .form-footer a:hover { text-decoration: underline; }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(14px) } to { opacity:1; transform:none } }
+
+  @media (max-width: 480px) {
+    .card { padding: 24px 20px; }
+    .grid2 { grid-template-columns: 1fr; }
+    .role-pills { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="page-header">
+    <a class="brand-link" href="{{ url_for('auth.login') }}">
+      <div class="brand-icon">🎓</div>
+      <div class="brand-name">EduGuard Rwanda</div>
+    </a>
+    <h1>Create your account</h1>
+    <p>Join EduGuard to monitor and support pupils at risk of dropout</p>
+  </div>
+
+  <div class="card">
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('auth.register') }}">
+
+      <!-- Personal info -->
+      <div class="section-label">Personal information</div>
+      <div class="grid2">
+        <div class="field">
+          <label>Full name <span class="req">*</span></label>
+          <input type="text" name="full_name" value="{{ form.get('full_name','') }}" placeholder="e.g. Uwimana Jean" required>
+        </div>
+        <div class="field">
+          <label>Phone number</label>
+          <input type="tel" name="phone" value="{{ form.get('phone','') }}" placeholder="+250 7XX XXX XXX">
+        </div>
+      </div>
+      <div class="field">
+        <label>Email address <span class="req">*</span></label>
+        <input type="email" name="email" value="{{ form.get('email','') }}" placeholder="you@example.rw" required>
+      </div>
+      <div class="field">
+        <label>Sector <span class="req">*</span></label>
+        <input type="text" name="sector" value="{{ form.get('sector','') }}" placeholder="e.g. Remera, Kicukiro" required>
+      </div>
+
+      <!-- Role selection -->
+      <div class="section-label">Select your role <span class="req">*</span></div>
+      <div class="role-pills">
+        <div class="role-pill">
+          <input type="radio" name="role" id="role-teacher" value="teacher"
+            {{ 'checked' if form.get('role') == 'teacher' }}>
+          <label for="role-teacher">
+            <span class="icon">👨‍🏫</span>
+            Teacher
+          </label>
+        </div>
+        <div class="role-pill">
+          <input type="radio" name="role" id="role-principal" value="principal"
+            {{ 'checked' if form.get('role') == 'principal' }}>
+          <label for="role-principal">
+            <span class="icon">🏫</span>
+            Principal
+          </label>
+        </div>
+        <div class="role-pill">
+          <input type="radio" name="role" id="role-leader" value="local_leader"
+            {{ 'checked' if form.get('role') == 'local_leader' }}>
+          <label for="role-leader">
+            <span class="icon">🏛️</span>
+            Local leader
+          </label>
+        </div>
+      </div>
+
+      <!-- Teacher-specific fields -->
+      <div class="role-fields" id="fields-teacher">
+        <div class="grid2">
+          <div class="field">
+            <label>School name <span class="req">*</span></label>
+            <input type="text" name="school_name" value="{{ form.get('school_name','') }}" placeholder="e.g. GS Remera">
+          </div>
+          <div class="field">
+            <label>Class <span class="req">*</span></label>
+            <div class="select-wrap">
+              <select name="class_name">
+                <option value="">Select class…</option>
+                {% for c in ['P1 A','P1 B','P2 A','P2 B','P3 A','P3 B','P4 A','P4 B','P5 A','P5 B','P6 A','P6 B'] %}
+                  <option value="{{ c }}" {{ 'selected' if form.get('class_name') == c }}>{{ c }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Principal-specific fields -->
+      <div class="role-fields" id="fields-principal">
+        <div class="field">
+          <label>School name <span class="req">*</span></label>
+          <input type="text" name="school_name_principal" value="{{ form.get('school_name_principal','') }}" placeholder="e.g. GS Remera">
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="section-label">Set password</div>
+      <div class="grid2">
+        <div class="field">
+          <label>Password <span class="req">*</span></label>
+          <input type="password" name="password" placeholder="Min. 8 characters" required>
+          <div class="pw-hint">At least 8 characters</div>
+        </div>
+        <div class="field">
+          <label>Confirm password <span class="req">*</span></label>
+          <input type="password" name="confirm_password" placeholder="Repeat password" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary">Create account</button>
+    </form>
+
+    <div class="form-footer">
+      Already have an account? <a href="{{ url_for('auth.login') }}">Sign in</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Show/hide role-specific fields
+  const radios = document.querySelectorAll('input[name="role"]');
+  const allFields = document.querySelectorAll('.role-fields');
+
+  function updateFields() {
+    const val = document.querySelector('input[name="role"]:checked')?.value;
+    allFields.forEach(f => f.classList.remove('visible'));
+    if (val === 'teacher')   document.getElementById('fields-teacher').classList.add('visible');
+    if (val === 'principal') document.getElementById('fields-principal').classList.add('visible');
+    const leaderFields = document.getElementById('fields-leader');
+    if (val === 'local_leader' && leaderFields) leaderFields.classList.add('visible');
+  }
+
+  radios.forEach(r => r.addEventListener('change', updateFields));
+  updateFields(); // run on page load (handles form re-render with errors)
+
+  // Sync principal school_name into the real field on submit
+  document.querySelector('form').addEventListener('submit', function() {
+    const pField = document.querySelector('[name="school_name_principal"]');
+    const tField = document.querySelector('[name="school_name"]');
+    const role   = document.querySelector('input[name="role"]:checked')?.value;
+    if (role === 'principal' && pField && tField) {
+      tField.value = pField.value;
+    }
+  });
+</script>
+</body>
+</html>

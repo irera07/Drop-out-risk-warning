@@ -1,0 +1,302 @@
+Child_Age,Child_Gender,Lack_of_School_Material,Lack _of _School_Fees,Job_opportunity,Pregnancy,Family _conflicts,Drug_abuse,Lack_of_motivation,Illness,Absenteism,Bad_Discipline,Performance,Social_activity,Year_of_Study,Dropped_out
+17 - 19,Male,1,0,0,0,0,0,0,0,0,0,41-50,None,Upper  Secondary,1
+13-Jun,Male,1,0,0,0,0,0,0,0,1,1,41-50,Other,Primary,1
+13-Jun,Male,1,0,0,0,0,0,0,0,1,1,71-100,Other,Primary,0
+13-Jun,Male,0,0,0,0,0,0,0,1,1,0,51-60,Dance,Primary,1
+13-Jun,Male,0,0,0,0,0,0,0,0,1,0,71-100,Other,Primary,0
+13-Jun,Male,0,0,0,0,0,0,0,0,1,0,41-50,Dance,Primary,1
+17 - 19,Male,0,0,0,0,0,0,0,1,1,0,41-50,None,Upper  Secondary,1
+13-Jun,Male,0,0,0,0,0,0,0,0,0,0,51-60,None,Primary,1
+13-Jun,Male,0,0,0,0,0,0,0,0,1,1,41-50,Other,Primary,1
+13-Jun,Male,1,1,0,0,0,0,0,0,1,0,61-70,Other,Primary,1
+17 - 19,Male,0,0,0,0,0,0,0,0,1,0,51-60,None,Upper  Secondary,1
+17 - 19,Male,0,0,0,0,0,0,0,1,1,0,51-60,Sport,Upper  Secondary,1
+14 - 16,Male,0,0,0,0,0,0,0,0,0,0,51-60,None,Lower  Secondary,1
+20 - 21,Male,1,1,0,0,0,0,0,0,1,0,51-60,None,Upper  Secondary,1
+17 - 19,Male,1,1,0,0,0,0,0,0,1,0,51-60,Dance,Upper  Secondary,1
+14 - 16,Male,1,1,0,0,0,0,0,0,1,0,61-70,None,Lower  Secondary,0
+20 - 21,Male,1,1,0,0,0,0,0,0,1,0,51-60,Sport,Upper  Secondary,1
+14 - 16,Male,0,0,0,0,0,0,0,0,1,1,51-60,Other,Lower  Secondary,1
+13-Jun,Male,0,0,0,0,0,0,0,0,1,1,51-60,None,Primary,1
+17 - 19,Male,1,1,0,0,0,0,0,0,0,0,41-50,None,Upper  Secondary,1
+13-Jun,Male,1,1,0,0,0,0,0,0,0,1,71-100,Other,Primary,0
+14 - 16,Male,0,0,0,0,0,0,0,0,1,0,61-70,None,Lower  Secondary,1
+13-Jun,Male,1,1,0,0,0,0,0,0,1,0,41-50,Dance,Primary,0
+17 - 19,Male,1,1,0,0,0,0,0,0,1,0,61-70,None,Upper  Secondary,1
+13-Jun,Male,0,0,0,0,0,0,0,1,1,0,41-50,None,Primary,1
+17 - 19,Male,1,1,0,0,0,0,0,0,0,0,61-70,Other,Upper  Secondary,0
+20 - 21,Male,0,0,0,0,0,0,0,1,0,0,51-60,Other,Upper  Secondary,1
+17 - 19,Male,0,0,0,0,0,0,0,1,1,0,41-50,Other,Upper  Secondary,1
+17 - 19,Male,0,0,0,0,0,0,0,0,0,1,41-50,Other,Upper  Secondary,1
+13-Jun,Male,0,0,0,0,0,0,0,0,1,1,41-50,Other,Primary,1
+13-Jun,Male,0,0,0,0,0,0,0,0,1,1,61-70,Other,Primary,1
+20 - 21,Male,0,0,0,0,0,0,0,0,1,0,51-60,Sport,Upper  Secondary,1
+14 - 16,Male,0,0,0,0,0,0,0,0,1,0,41-50,Sport,Lower  Secondary,1
+20 - 21,Male,0,1,0,0,1,0,0,0,1,1,61-70,Sport,Upper  Secondary,1
+13-Jun,Male,1,0,0,0,0,0,0,0,0,0,41-50,None,Primary,1
+13-Jun,Male,0,1,0,0,1,0,0,0,0,0,61-70,None,Primary,0
+17 - 19,Male,1,0,0,0,1,0,0,0,0,0,51-60,None,Upper  Secondary,0
+17 - 19,Male,1,0,0,0,0,0,1,0,0,1,0-40,None,Upper  Secondary,1
+13-Jun,Male,1,0,0,0,0,0,0,0,0,0,41-50,None,Primary,1
+14 - 16,Male,1,0,0,0,1,0,0,1,1,0,41-50,None,Lower  Secondary,1
+13-Jun,Male,1,0,0,0,0,0,0,0,1,0,41-50,None,Primary,1
+17 - 19,Male,1,0,0,0,1,0,0,0,0,0,51-60,None,Upper  Secondary,0
+13-Jun,Male,1,0,0,0,0,0,0,0,0,1,51-60,None,Primary,1
+20 - 21,Male,1,1,0,0,1,0,0,0,0,1,51-60,Other,Upper  Secondary,1
+20 - 21,Male,1,0,1,0,1,0,1,0,0,1,51-60,Other,Upper  Secondary,1
+13-Jun,Male,0,1,0,0,1,0,0,0,0,0,41-50,Other,Primary,1
+14 - 16,Male,0,0,1,0,0,0,0,0,0,0,71-100,Other,Lower  Secondary,1
+17 - 19,Male,1,0,0,0,0,0,0,0,0,0,41-50,Sport,Upper  Secondary,1
+17 - 19,Male,0,1,0,0,1,0,1,0,1,0,51-60,Sport,Upper  Secondary,1
+14 - 16,Male,0,1,0,0,1,0,1,0,1,1,41-50,Other,Lower  Secondary,1
+20 - 21,Male,1,0,0,0,1,1,0,0,0,1,41-50,Sport,Upper  Secondary,1
+14 - 16,Male,0,1,0,0,1,0,0,0,1,1,51-60,Other,Lower  Secondary,1
+20 - 21,Female,1,0,0,1,1,0,0,0,0,0,41-50,None,Upper  Secondary,1
+13-Jun,Male,1,0,0,0,1,0,0,0,0,0,61-70,None,Primary,0
+20 - 21,Male,0,1,0,0,1,0,0,0,0,0,51-60,None,Upper  Secondary,1
+14 - 16,Male,1,0,0,0,1,0,0,0,0,0,71-100,None,Lower  Secondary,0
+17 - 19,Female,1,0,0,1,1,0,0,0,0,1,41-50,None,Upper  Secondary,1
+13-Jun,Male,1,0,0,0,0,0,1,0,0,1,51-60,None,Primary,1
+13-Jun,Male,1,0,0,0,0,0,0,0,0,1,51-60,None,Primary,1
+13-Jun,Male,1,0,0,0,0,0,0,0,1,1,51-60,None,Primary,1
+13-Jun,Male,1,0,0,0,1,0,1,0,1,1,41-50,None,Primary,1
+13-Jun,Male,1,0,0,0,0,0,1,0,0,1,41-50,None,Primary,1
+14 - 16,Male,1,0,0,0,0,0,1,0,0,1,41-50,None,Lower  Secondary,1
+13-Jun,Male,1,0,0,0,0,0,0,0,0,1,41-50,None,Primary,1
+13-Jun,Male,1,0,0,0,1,0,0,0,1,1,41-50,None,Primary,1
+13-Jun,Male,1,0,0,0,0,0,0,0,0,0,51-60,None,Primary,0
+20 - 21,Male,1,0,0,0,1,0,1,0,0,0,41-50,Dance,Upper  Secondary,1
+20 - 21,Male,1,0,0,0,1,0,1,0,1,1,0-40,Sport,Upper  Secondary,1
+20 - 21,Female,1,0,0,1,1,0,0,0,1,1,41-50,Dance,Upper  Secondary,1
+20 - 21,Male,1,1,0,0,1,0,0,0,0,0,0-40,Sport,Upper  Secondary,1
+17 - 19,Male,1,0,0,0,1,0,1,0,1,1,41-50,Dance,Upper  Secondary,1
+20 - 21,Male,1,0,0,0,1,0,0,0,0,0,51-60,None,Upper  Secondary,0
+17 - 19,Male,0,0,0,0,1,0,0,0,0,0,51-60,None,Upper  Secondary,1
+13-Jun,Male,1,0,0,0,1,0,0,0,0,0,61-70,None,Primary,0
+13-Jun,Male,1,1,0,0,1,0,0,0,0,0,41-50,None,Primary,1
+13-Jun,Male,1,0,0,0,1,0,0,0,0,0,71-100,None,Primary,0
+20 - 21,Male,0,0,0,0,1,0,1,0,0,1,41-50,None,Upper  Secondary,1
+13-Jun,Male,1,0,0,0,1,0,0,0,0,0,61-70,None,Primary,0
+17 - 19,Male,1,0,1,0,1,1,1,0,1,1,51-60,None,Upper  Secondary,1
+17 - 19,Male,1,0,1,0,1,0,1,0,0,1,41-50,None,Upper  Secondary,1
+20 - 21,Male,1,0,0,0,0,0,1,0,1,1,0-40,None,Upper  Secondary,1
+14 - 16,Male,1,0,0,0,1,0,0,0,0,0,71-100,Other,Lower  Secondary,0
+20 - 21,Male,1,0,1,0,1,0,1,0,1,0,0-40,None,Upper  Secondary,1
+14 - 16,Male,1,0,0,0,1,0,0,0,0,0,71-100,Other,Lower  Secondary,0
+20 - 21,Male,1,0,1,0,1,0,1,0,0,1,0-40,None,Upper  Secondary,1
+17 - 19,Male,1,0,0,0,1,0,0,0,0,0,71-100,None,Upper  Secondary,0
+13-Jun,Male,1,0,0,0,1,0,0,0,0,0,51-60,None,Primary,0
+13-Jun,Male,1,0,0,0,1,0,0,0,1,1,41-50,None,Primary,0
+13-Jun,Male,1,0,0,0,1,0,0,0,1,1,41-50,None,Primary,0
+14 - 16,Male,1,1,0,0,1,0,0,0,1,1,51-60,None,Lower  Secondary,1
+14 - 16,Male,1,0,0,0,1,0,0,0,0,0,61-70,None,Lower  Secondary,0
+20 - 21,Male,1,0,1,0,1,0,0,0,1,1,51-60,Sport,Upper  Secondary,1
+13-Jun,Male,1,0,0,0,1,1,0,0,0,1,0-40,None,Primary,1
+13-Jun,Female,1,0,0,0,1,0,0,0,1,0,61-70,Dance,Primary,1
+20 - 21,Male,1,0,0,0,1,0,1,0,1,1,51-60,None,Upper  Secondary,1
+13-Jun,Male,1,1,0,0,0,0,0,0,0,0,71-100,None,Primary,1
+14 - 16,Male,1,0,0,0,1,0,0,1,1,1,41-50,Other,Lower  Secondary,1
+17 - 19,Male,1,0,0,0,1,1,0,0,1,1,51-60,Other,Upper  Secondary,1
+17 - 19,Male,1,0,0,0,0,0,0,0,0,0,51-60,Sport,Upper  Secondary,1
+13-Jun,Male,1,1,0,0,1,0,0,0,0,0,61-70,None,Primary,0
+14 - 16,Male,1,1,0,0,1,0,0,0,1,1,41-50,Dance,Lower  Secondary,1
+13-Jun,Male,1,1,0,0,1,0,0,0,1,0,51-60,Dance,Primary,0
+20 - 21,Female,1,0,0,1,1,0,0,0,1,1,51-60,Dance,Upper  Secondary,1
+17 - 19,Male,0,0,0,0,1,0,0,0,1,1,41-50,Dance,Upper  Secondary,1
+17 - 19,Female,1,0,0,1,1,0,0,0,1,1,41-50,Dance,Upper  Secondary,1
+20 - 21,Female,1,0,0,1,1,0,0,0,1,1,0-40,None,Upper  Secondary,1
+17 - 19,Male,1,1,0,0,1,0,0,0,1,0,0-40,Sport,Upper  Secondary,1
+17 - 19,Male,1,1,0,0,1,0,0,0,1,1,0-40,Sport,Upper  Secondary,1
+13-Jun,Male,1,1,0,0,1,0,0,0,0,1,51-60,Sport,Primary,1
+13-Jun,Male,1,1,0,0,1,0,0,0,0,0,51-60,None,Primary,1
+20 - 21,Male,0,0,0,0,1,0,0,0,1,1,51-60,None,Upper  Secondary,1
+20 - 21,Male,1,0,1,0,1,0,0,0,1,1,41-50,None,Upper  Secondary,1
+20 - 21,Male,1,0,1,0,1,0,1,0,1,1,41-50,None,Upper  Secondary,1
+20 - 21,Male,1,0,1,0,1,0,1,0,1,1,41-50,None,Upper  Secondary,1
+17 - 19,Male,1,0,1,0,1,0,1,0,1,0,51-60,Other,Upper  Secondary,1
+20 - 21,Male,0,0,0,0,0,0,1,0,1,1,41-50,None,Upper  Secondary,1
+14 - 16,Male,1,1,0,0,1,0,0,0,1,1,51-60,Dance,Lower  Secondary,1
+13-Jun,Male,1,1,0,0,1,0,0,0,1,0,41-50,None,Primary,1
+20 - 21,Male,1,0,0,0,1,0,1,0,1,1,0-40,Dance,Upper  Secondary,1
+20 - 21,Male,0,0,0,0,1,0,0,0,1,1,41-50,Sport,Upper  Secondary,1
+17 - 19,Female,1,0,0,1,1,0,0,0,1,1,51-60,Dance,Upper  Secondary,1
+17 - 19,Male,1,0,0,0,0,0,0,0,1,0,71-100,Other,Upper  Secondary,1
+13-Jun,Male,0,0,0,0,1,0,0,0,0,0,61-70,Other,Primary,0
+13-Jun,Male,0,0,0,0,1,0,0,0,0,0,61-70,Other,Primary,1
+13-Jun,Male,0,0,0,0,1,0,0,0,0,0,61-70,Other,Primary,1
+20 - 21,Male,0,0,0,0,1,0,0,0,1,1,41-50,Dance,Upper  Secondary,1
+17 - 19,Male,0,0,0,0,1,0,0,0,1,1,0-40,Dance,Upper  Secondary,1
+17 - 19,Male,1,0,0,0,1,0,0,1,1,0,41-50,Dance,Upper  Secondary,1
+14 - 16,Male,1,0,0,0,1,0,0,0,1,0,61-70,None,Lower  Secondary,1
+14 - 16,Male,1,0,0,0,1,0,0,0,1,0,51-60,None,Lower  Secondary,1
+14 - 16,Male,1,0,0,0,1,0,0,1,1,0,51-60,Other,Lower  Secondary,1
+17 - 19,Male,1,0,0,0,1,0,0,0,0,0,51-60,Other,Upper  Secondary,1
+20 - 21,Male,1,0,0,0,1,0,0,0,1,1,51-60,Sport,Upper  Secondary,1
+14 - 16,Male,0,1,0,0,1,0,0,0,1,0,51-60,None,Lower  Secondary,1
+17 - 19,Male,1,0,0,0,1,0,0,0,1,0,61-70,Dance,Upper  Secondary,1
+20 - 21,Male,1,0,0,0,1,0,0,1,1,0,51-60,Dance,Upper  Secondary,1
+20 - 21,Male,1,0,0,0,1,0,0,0,0,0,51-60,Dance,Upper  Secondary,1
+14 - 16,Male,0,1,0,0,1,0,0,0,1,0,51-60,None,Lower  Secondary,1
+14 - 16,Male,0,1,0,0,1,0,0,0,1,0,41-50,Other,Lower  Secondary,0
+14 - 16,Male,0,1,0,0,1,0,0,0,1,0,71-100,None,Lower  Secondary,0
+17 - 19,Male,0,1,0,0,1,0,0,0,1,0,61-70,Dance,Upper  Secondary,1
+14 - 16,Male,1,0,0,0,1,0,0,0,1,1,41-50,None,Lower  Secondary,1
+14 - 16,Male,1,0,0,0,1,0,0,0,1,1,61-70,Dance,Lower  Secondary,1
+13-Jun,Male,0,1,0,0,1,0,0,0,0,0,41-50,Sport,Primary,1
+14 - 16,Male,0,1,0,0,1,0,0,0,0,1,61-70,Dance,Lower  Secondary,0
+13-Jun,Male,1,0,0,0,1,0,0,0,1,0,51-60,Other,Primary,1
+13-Jun,Male,0,1,0,0,1,0,0,0,1,0,41-50,Other,Primary,1
+14 - 16,Male,0,1,0,0,1,0,0,0,1,0,41-50,Dance,Lower  Secondary,1
+14 - 16,Male,1,0,0,0,1,0,0,1,1,0,41-50,Dance,Lower  Secondary,1
+14 - 16,Male,0,1,0,0,1,0,0,0,0,0,61-70,None,Lower  Secondary,1
+13-Jun,Male,1,0,0,0,1,0,0,1,0,0,51-60,None,Primary,0
+13-Jun,Male,1,0,0,0,1,0,0,1,1,0,41-50,Other,Primary,1
+14 - 16,Male,1,0,0,0,1,0,0,0,0,1,61-70,Other,Lower  Secondary,1
+14 - 16,Male,1,0,0,0,1,0,0,0,1,1,41-50,Sport,Lower  Secondary,1
+14 - 16,Male,1,0,0,0,1,0,0,0,1,1,61-70,None,Lower  Secondary,0
+17 - 19,Male,1,0,0,0,1,0,0,0,1,0,51-60,Dance,Upper  Secondary,1
+14 - 16,Male,1,0,0,0,1,0,0,0,1,0,0-40,Dance,Lower  Secondary,1
+14 - 16,Male,0,0,0,0,1,0,0,0,1,1,61-70,Other,Lower  Secondary,1
+20 - 21,Female,0,0,1,1,1,1,1,1,1,0,71-100,None,Upper  Secondary,0
+13-Jun,Male,1,0,1,0,1,1,1,0,0,0,61-70,Sport,Primary,1
+13-Jun,Male,1,0,0,0,0,0,1,1,1,1,0-40,Sport,Primary,0
+14 - 16,Male,1,0,0,0,0,0,1,1,0,1,61-70,Other,Lower  Secondary,0
+17 - 19,Female,0,1,0,1,1,1,1,1,0,0,61-70,None,Upper  Secondary,0
+20 - 21,Female,0,1,0,1,0,1,1,1,0,0,71-100,Other,Upper  Secondary,0
+13-Jun,Male,1,1,1,0,1,0,1,0,0,1,71-100,None,Primary,1
+20 - 21,Female,0,0,1,1,0,0,1,1,1,0,51-60,Sport,Upper  Secondary,0
+13-Jun,Male,1,1,0,0,1,0,1,1,0,0,51-60,Sport,Primary,1
+14 - 16,Male,0,0,1,0,0,0,0,1,0,0,51-60,Dance,Lower  Secondary,1
+20 - 21,Male,0,1,1,0,1,1,1,0,0,1,41-50,Other,Upper  Secondary,0
+20 - 21,Male,0,1,1,0,0,0,0,0,1,1,61-70,Dance,Upper  Secondary,0
+20 - 21,Female,0,0,1,1,0,1,0,1,1,1,41-50,Other,Upper  Secondary,0
+17 - 19,Male,0,1,1,0,0,0,0,0,1,0,41-50,None,Upper  Secondary,0
+14 - 16,Male,1,1,1,0,0,0,1,1,0,1,61-70,Other,Lower  Secondary,1
+13-Jun,Female,0,0,0,0,1,0,1,1,1,1,41-50,None,Primary,1
+14 - 16,Male,1,1,1,0,1,1,1,1,0,0,51-60,None,Lower  Secondary,1
+17 - 19,Male,0,0,0,0,0,1,0,1,1,0,51-60,Sport,Upper  Secondary,0
+14 - 16,Male,0,1,0,0,1,1,1,1,1,0,41-50,Dance,Lower  Secondary,0
+17 - 19,Female,0,1,0,1,0,0,1,1,0,1,41-50,Sport,Upper  Secondary,0
+20 - 21,Female,1,0,0,1,1,0,1,1,0,0,61-70,Other,Upper  Secondary,0
+13-Jun,Male,1,0,0,0,0,0,0,1,1,1,51-60,Other,Primary,1
+14 - 16,Male,0,1,1,0,0,1,1,0,0,0,0-40,Dance,Lower  Secondary,1
+14 - 16,Male,0,0,1,0,1,0,0,0,1,1,0-40,Other,Lower  Secondary,0
+20 - 21,Male,0,0,1,0,0,0,1,1,1,1,61-70,None,Upper  Secondary,0
+13-Jun,Male,1,0,0,0,0,0,0,1,1,1,51-60,Sport,Primary,1
+13-Jun,Male,0,1,0,0,1,1,1,1,1,1,71-100,None,Primary,0
+13-Jun,Male,0,0,1,0,0,1,0,1,0,0,51-60,Dance,Primary,0
+14 - 16,Female,0,1,0,0,0,1,0,1,0,0,41-50,Sport,Lower  Secondary,1
+13-Jun,Male,1,0,0,0,1,0,0,1,1,0,61-70,Other,Primary,0
+17 - 19,Male,0,0,1,0,1,1,1,1,1,0,71-100,Dance,Upper  Secondary,0
+17 - 19,Male,0,1,0,0,1,0,1,0,0,1,0-40,Sport,Upper  Secondary,0
+13-Jun,Female,0,1,0,0,1,0,1,1,1,1,61-70,Sport,Primary,0
+17 - 19,Male,0,0,0,0,0,0,1,0,1,1,71-100,Dance,Upper  Secondary,1
+17 - 19,Male,0,1,1,0,1,0,0,0,1,1,0-40,None,Upper  Secondary,0
+17 - 19,Male,0,0,1,0,1,0,1,1,1,1,51-60,Dance,Upper  Secondary,1
+14 - 16,Male,1,0,0,0,0,1,0,0,0,0,41-50,Other,Lower  Secondary,0
+20 - 21,Female,1,0,0,1,0,0,1,1,0,0,71-100,Other,Upper  Secondary,0
+13-Jun,Female,0,0,0,0,0,0,1,0,1,1,41-50,Dance,Primary,1
+13-Jun,Female,0,1,1,0,1,1,1,0,0,1,41-50,Other,Primary,1
+14 - 16,Female,0,0,0,0,0,0,0,1,1,1,51-60,Other,Lower  Secondary,1
+14 - 16,Male,1,0,0,0,0,1,0,0,1,1,51-60,None,Lower  Secondary,1
+17 - 19,Male,0,1,1,0,1,1,1,0,0,1,0-40,None,Upper  Secondary,0
+17 - 19,Male,0,1,1,0,1,1,0,0,0,1,41-50,Dance,Upper  Secondary,0
+13-Jun,Female,0,1,0,0,1,0,0,0,1,1,51-60,None,Primary,0
+20 - 21,Male,0,0,0,0,0,1,1,0,1,1,61-70,Other,Upper  Secondary,0
+13-Jun,Male,1,1,0,0,0,0,0,1,1,0,71-100,Other,Primary,0
+13-Jun,Male,1,0,0,0,0,1,1,0,1,0,61-70,Other,Primary,0
+14 - 16,Female,1,0,1,0,1,0,0,1,0,1,61-70,Dance,Lower  Secondary,1
+20 - 21,Male,0,1,0,0,0,0,0,0,0,1,61-70,Other,Upper  Secondary,0
+14 - 16,Female,0,0,1,0,0,0,1,1,1,0,51-60,Sport,Lower  Secondary,0
+17 - 19,Female,1,1,0,1,1,1,0,1,1,1,61-70,Dance,Upper  Secondary,1
+17 - 19,Female,0,0,1,1,0,1,0,0,1,0,41-50,Other,Upper  Secondary,1
+13-Jun,Male,1,0,0,0,0,1,0,0,0,0,51-60,Dance,Primary,0
+20 - 21,Male,0,1,1,0,1,1,0,0,0,0,0-40,Dance,Upper  Secondary,0
+13-Jun,Male,0,0,1,0,1,1,1,0,0,1,0-40,Sport,Primary,1
+20 - 21,Male,0,1,1,0,0,0,1,0,1,1,41-50,Sport,Upper  Secondary,0
+20 - 21,Male,1,0,1,0,0,0,0,1,0,0,71-100,Dance,Upper  Secondary,0
+17 - 19,Female,1,1,0,1,1,0,0,1,0,0,51-60,Other,Upper  Secondary,0
+13-Jun,Male,0,1,1,0,1,0,0,1,1,1,0-40,None,Primary,1
+13-Jun,Female,0,0,0,0,1,1,1,1,1,0,61-70,Sport,Primary,1
+13-Jun,Female,1,1,0,0,0,0,0,0,0,0,41-50,None,Primary,1
+20 - 21,Male,1,0,0,0,0,1,1,0,0,1,41-50,Sport,Upper  Secondary,0
+14 - 16,Male,0,1,1,0,0,1,0,0,0,1,51-60,Other,Lower  Secondary,1
+17 - 19,Female,1,1,0,1,1,0,0,1,0,1,61-70,Other,Upper  Secondary,1
+14 - 16,Male,1,0,0,0,0,1,1,1,1,1,51-60,Other,Lower  Secondary,1
+13-Jun,Female,0,0,0,0,1,1,1,1,1,0,61-70,None,Primary,1
+17 - 19,Male,0,0,1,0,1,1,1,0,1,1,71-100,Dance,Upper  Secondary,0
+17 - 19,Male,0,1,0,0,1,1,0,0,1,0,71-100,Sport,Upper  Secondary,1
+13-Jun,Male,1,0,1,0,1,1,0,0,1,1,41-50,Sport,Primary,0
+20 - 21,Male,1,0,0,0,0,1,0,0,1,0,51-60,None,Upper  Secondary,1
+13-Jun,Male,0,1,0,0,0,0,1,1,1,1,71-100,None,Primary,1
+14 - 16,Male,0,0,0,0,0,0,0,0,0,1,61-70,Other,Lower  Secondary,0
+13-Jun,Male,0,0,1,0,1,1,1,0,0,1,71-100,Other,Primary,0
+17 - 19,Female,0,1,0,1,1,1,1,1,1,1,0-40,None,Upper  Secondary,0
+14 - 16,Male,0,0,0,0,1,0,1,0,0,0,0-40,Other,Lower  Secondary,1
+20 - 21,Male,0,1,0,0,0,1,0,0,0,0,71-100,Sport,Upper  Secondary,0
+20 - 21,Male,1,0,1,0,0,0,1,1,1,0,51-60,None,Upper  Secondary,0
+13-Jun,Male,0,1,1,0,1,0,1,1,0,1,0-40,Dance,Primary,0
+20 - 21,Female,1,0,0,1,1,1,0,0,1,0,61-70,Sport,Upper  Secondary,1
+17 - 19,Male,0,1,0,0,1,1,1,1,0,0,71-100,Sport,Upper  Secondary,1
+14 - 16,Male,0,0,0,0,0,0,1,0,0,1,51-60,None,Lower  Secondary,1
+20 - 21,Male,0,0,0,0,1,1,0,0,1,0,0-40,Other,Upper  Secondary,0
+13-Jun,Male,1,0,1,0,1,0,0,1,0,1,0-40,Dance,Primary,0
+13-Jun,Male,1,0,1,0,1,0,0,1,1,1,0-40,Dance,Primary,1
+13-Jun,Male,0,1,0,0,1,0,1,0,1,1,0-40,Dance,Primary,1
+17 - 19,Female,0,1,0,1,1,1,0,0,0,1,71-100,Dance,Upper  Secondary,1
+13-Jun,Male,0,1,0,0,1,1,1,0,1,0,41-50,Other,Primary,1
+13-Jun,Female,1,0,1,0,1,0,0,0,0,0,71-100,None,Primary,1
+13-Jun,Male,1,1,0,0,0,0,1,1,0,1,41-50,Other,Primary,1
+17 - 19,Male,1,0,0,0,1,0,0,0,0,1,51-60,Dance,Upper  Secondary,1
+20 - 21,Female,0,1,1,1,0,1,1,1,0,1,71-100,Other,Upper  Secondary,1
+13-Jun,Female,0,0,1,0,1,0,1,1,0,1,41-50,Sport,Primary,1
+13-Jun,Male,1,1,1,0,0,1,0,1,1,1,41-50,Sport,Primary,0
+20 - 21,Male,1,0,1,0,0,0,1,0,1,1,61-70,Sport,Upper  Secondary,1
+20 - 21,Female,0,1,0,1,0,1,0,1,1,1,0-40,Sport,Upper  Secondary,0
+17 - 19,Male,0,0,0,0,0,0,1,0,0,1,51-60,Dance,Upper  Secondary,1
+20 - 21,Male,1,0,1,0,1,1,1,1,1,1,51-60,None,Upper  Secondary,1
+17 - 19,Male,0,1,1,0,1,0,0,1,1,0,71-100,Sport,Upper  Secondary,0
+17 - 19,Male,1,1,1,0,1,0,0,0,1,1,51-60,Other,Upper  Secondary,0
+17 - 19,Male,1,0,0,0,1,1,0,1,0,0,0-40,Dance,Upper  Secondary,1
+13-Jun,Female,0,1,0,0,1,1,1,1,1,0,41-50,Other,Primary,1
+13-Jun,Female,1,1,0,0,0,1,1,1,0,1,51-60,Sport,Primary,0
+20 - 21,Male,1,1,1,0,1,0,1,0,0,1,61-70,None,Upper  Secondary,0
+13-Jun,Male,0,0,1,0,0,0,1,0,0,0,41-50,Sport,Primary,0
+13-Jun,Male,1,0,1,0,0,1,1,0,0,1,51-60,None,Primary,1
+17 - 19,Female,1,0,1,1,1,0,0,0,0,1,61-70,Other,Upper  Secondary,0
+17 - 19,Male,0,0,1,0,1,0,1,0,1,0,51-60,Other,Upper  Secondary,0
+13-Jun,Female,0,1,0,0,0,1,0,0,1,0,0-40,Other,Primary,1
+17 - 19,Male,0,1,0,0,0,1,0,1,1,0,51-60,Sport,Upper  Secondary,0
+13-Jun,Female,1,1,0,0,0,0,1,0,1,1,61-70,Sport,Primary,1
+20 - 21,Male,0,1,0,0,1,1,1,0,1,0,51-60,Sport,Upper  Secondary,0
+20 - 21,Female,0,0,1,1,1,1,1,1,0,0,61-70,Dance,Upper  Secondary,1
+13-Jun,Male,1,0,0,0,0,0,0,1,0,0,51-60,None,Primary,1
+17 - 19,Female,1,1,1,1,1,0,0,0,1,0,41-50,Other,Upper  Secondary,0
+14 - 16,Male,1,1,0,0,0,0,1,1,1,0,61-70,None,Lower  Secondary,1
+13-Jun,Female,0,0,1,0,1,1,1,0,1,1,41-50,Dance,Primary,0
+14 - 16,Male,1,1,1,0,0,0,1,1,1,0,61-70,Other,Lower  Secondary,1
+13-Jun,Male,1,1,0,0,1,0,1,1,1,0,41-50,None,Primary,1
+13-Jun,Male,1,0,1,0,1,0,1,1,0,0,41-50,Dance,Primary,1
+20 - 21,Male,1,1,0,0,1,0,0,0,1,1,51-60,Sport,Upper  Secondary,1
+14 - 16,Male,0,0,1,0,1,0,1,1,1,1,0-40,None,Lower  Secondary,1
+14 - 16,Male,0,0,1,0,0,0,1,1,0,0,71-100,Other,Lower  Secondary,0
+13-Jun,Female,1,1,1,0,0,0,1,1,1,1,71-100,Sport,Primary,0
+13-Jun,Male,1,1,0,0,0,1,0,0,0,0,51-60,Sport,Primary,1
+20 - 21,Female,0,0,0,0,0,0,0,1,1,0,0-40,None,Upper  Secondary,0
+20 - 21,Female,0,0,0,0,0,0,0,1,0,1,71-100,None,Upper  Secondary,0
+13-Jun,Male,1,1,0,0,0,1,1,0,0,0,0-40,Sport,Primary,1
+20 - 21,Male,0,1,1,0,1,0,1,0,0,1,41-50,Other,Upper  Secondary,0
+14 - 16,Female,1,0,1,0,1,1,1,0,0,1,61-70,Sport,Lower  Secondary,0
+13-Jun,Female,0,1,0,0,0,1,1,1,0,1,61-70,Dance,Primary,1
+13-Jun,Female,1,1,1,0,1,1,0,1,1,0,0-40,Other,Primary,0
+13-Jun,Male,0,1,0,0,1,0,0,0,1,0,61-70,Dance,Primary,1
+20 - 21,Female,1,1,0,1,0,1,1,1,1,1,41-50,None,Upper  Secondary,1
+20 - 21,Male,0,1,1,0,1,0,1,0,0,1,0-40,Sport,Upper  Secondary,1
+17 - 19,Female,1,1,1,0,1,1,1,0,1,1,61-70,Sport,Upper  Secondary,1
+17 - 19,Male,0,0,1,0,0,1,0,1,0,1,41-50,Other,Upper  Secondary,1
+17 - 19,Female,1,0,1,0,0,1,0,1,1,1,51-60,Dance,Upper  Secondary,1
+13-Jun,Male,1,0,1,0,0,1,1,1,1,1,71-100,Sport,Primary,1
+17 - 19,Female,0,0,1,1,0,0,0,0,1,0,71-100,Sport,Upper  Secondary,0
+20 - 21,Female,1,1,1,0,0,1,1,1,1,1,41-50,Dance,Upper  Secondary,0
+17 - 19,Female,0,0,1,1,0,0,0,0,1,0,71-100,Sport,Upper  Secondary,0
+17 - 19,Male,0,1,0,0,1,0,0,0,1,0,0-40,None,Upper  Secondary,0

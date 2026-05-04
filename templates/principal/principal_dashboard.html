@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Principal Dashboard — EduGuard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --ink:      #0d1f1a;
+  --teal:     #0a6b55;
+  --teal-dk:  #085c49;
+  --teal-lt:  #e6f4f0;
+  --teal-md:  #b3ddd4;
+  --gold:     #c8973a;
+  --muted:    #5a7068;
+  --border:   #d0deda;
+  --bg:       #f5f8f7;
+  --white:    #ffffff;
+  --red:      #c0392b;
+  --red-lt:   #fdecea;
+  --amber:    #d97706;
+  --amber-lt: #fffbeb;
+  --green:    #1a7a4a;
+  --green-lt: #e8f5ee;
+  --sidebar-w:220px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{width:var(--sidebar-w);background:var(--ink);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100}
+.sidebar-brand{padding:24px 20px 20px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:10px}
+.sidebar-brand .icon{width:36px;height:36px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.sidebar-brand .name{font-family:'DM Serif Display',serif;color:#fff;font-size:16px;line-height:1.2}
+.sidebar-brand .sub{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em}
+.sidebar-user{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidebar-user .u-name{font-size:13px;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-user .u-role{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
+.sidebar-user .u-school{font-size:11px;color:rgba(255,255,255,.55);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+nav{flex:1;padding:12px 10px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;color:rgba(255,255,255,.6);font-size:13.5px;cursor:pointer;text-decoration:none;transition:background .15s,color .15s;margin-bottom:2px}
+.nav-item:hover{background:rgba(255,255,255,.08);color:#fff}
+.nav-item.active{background:var(--teal);color:#fff;font-weight:500}
+.nav-item .ni{font-size:17px;width:22px;text-align:center;flex-shrink:0}
+.sidebar-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,.1)}
+.sidebar-footer a{font-size:12px;color:rgba(255,255,255,.4);text-decoration:none;display:flex;align-items:center;gap:6px}
+.sidebar-footer a:hover{color:#fff}
+
+/* Main */
+.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-title{font-family:'DM Serif Display',serif;font-size:18px}
+.topbar-meta{font-size:12px;color:var(--muted)}
+.topbar-badge{background:var(--teal-lt);color:var(--teal);font-size:11px;padding:4px 10px;border-radius:20px;font-weight:500}
+.content{padding:32px}
+
+/* Cards */
+.card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px}
+.card-title{font-size:15px;font-weight:500;margin-bottom:4px}
+.card-sub{font-size:13px;color:var(--muted)}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.kpi-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.kpi{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
+.kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:6px}
+.kpi-val{font-family:'DM Serif Display',serif;font-size:32px;color:var(--ink);line-height:1}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.kpi.danger .kpi-val{color:var(--red)}
+.kpi.warn   .kpi-val{color:var(--amber)}
+.kpi.good   .kpi-val{color:var(--green)}
+
+/* Flash */
+.flash{padding:11px 16px;border-radius:8px;font-size:13px;margin-bottom:18px;line-height:1.5}
+.flash.error  {background:var(--red-lt);  color:var(--red);  border-left:3px solid var(--red)}
+.flash.success{background:var(--green-lt);color:var(--green);border-left:3px solid var(--green)}
+.flash.info   {background:var(--teal-lt); color:var(--teal); border-left:3px solid var(--teal)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:background .15s,transform .1s;text-decoration:none}
+.btn:active{transform:translateY(1px)}
+.btn-primary {background:var(--teal);color:#fff}
+.btn-primary:hover{background:var(--teal-dk)}
+.btn-secondary{background:var(--bg);color:var(--ink);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--teal-lt);border-color:var(--teal)}
+.btn-sm{padding:6px 12px;font-size:12px}
+
+/* Class selector */
+.class-selector{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.class-selector select{padding:9px 36px 9px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);background:var(--bg);appearance:none;outline:none;cursor:pointer;transition:border-color .15s;min-width:180px}
+.class-selector select:focus{border-color:var(--teal)}
+.select-wrap{position:relative}
+.select-wrap::after{content:'▾';position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;font-size:13px}
+
+/* Section divider */
+.section-divider{display:flex;align-items:center;gap:12px;margin:24px 0 16px}
+.section-divider span{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);white-space:nowrap}
+.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* Charts */
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.chart-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px}
+.chart-title{font-size:13px;font-weight:500;margin-bottom:14px}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:500}
+.badge-high  {background:var(--red-lt);  color:var(--red)}
+.badge-medium{background:var(--amber-lt);color:var(--amber)}
+.badge-low   {background:var(--green-lt);color:var(--green)}
+
+/* Class cards grid */
+.class-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.class-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 18px;cursor:pointer;transition:border-color .15s,box-shadow .15s;text-decoration:none;display:block}
+.class-card:hover{border-color:var(--teal);box-shadow:0 2px 8px rgba(10,107,85,.08)}
+.class-card .cc-name{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:6px}
+.class-card .cc-stats{font-size:12px;color:var(--muted)}
+.class-card .cc-risk{margin-top:8px;display:flex;gap:6px}
+
+/* Table */
+.table-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:var(--bg);padding:10px 14px;text-align:left;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
+tbody td{padding:9px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--teal-lt)}
+
+/* Expand */
+.expand-row{display:none;background:var(--bg)}
+.expand-row.open{display:table-row}
+.expand-cell{padding:12px 20px;font-size:12px;color:var(--muted)}
+
+/* Previous report card */
+.report-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.report-card:hover{border-color:var(--teal)}
+.rc-meta{font-size:12px;color:var(--muted);margin-top:3px}
+.rc-stats{display:flex;gap:16px;font-size:12px;color:var(--muted)}
+.rc-stats span{font-weight:500;color:var(--ink)}
+
+/* Help steps */
+.step{display:flex;gap:16px;margin-bottom:20px}
+.step-num{width:32px;height:32px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
+.step-body h4{font-size:14px;font-weight:500;margin-bottom:4px}
+.step-body p{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* Social */
+.social-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+.social-pill{display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:13px;text-decoration:none;color:var(--ink);transition:border-color .15s}
+.social-pill:hover{border-color:var(--teal);color:var(--teal)}
+
+/* Welcome */
+.welcome-hero{display:flex;align-items:center;gap:20px;margin-bottom:24px}
+.avatar{width:60px;height:60px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.avatar.principal{background:#1a3a30}
+.welcome-hero h2{font-family:'DM Serif Display',serif;font-size:26px}
+.welcome-hero p{font-size:14px;color:var(--muted);margin-top:4px}
+
+/* Empty */
+.empty{text-align:center;padding:48px 20px}
+.empty-icon{font-size:48px;margin-bottom:12px}
+.empty h3{font-size:16px;margin-bottom:6px}
+.empty p{font-size:13px;color:var(--muted)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.content>*{animation:fadeUp .3s ease both}
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="icon">🎓</div>
+    <div>
+      <div class="name">EduGuard</div>
+      <div class="sub">Rwanda</div>
+    </div>
+  </div>
+  <div class="sidebar-user">
+    <div class="u-name">{{ user.full_name }}</div>
+    <div class="u-role">Principal</div>
+    <div class="u-school">{{ user.school_name }}</div>
+  </div>
+  <nav>
+    <a href="{{ url_for('principal.home') }}"             class="nav-item {% if active_tab=='home'     %}active{% endif %}"><span class="ni">🏠</span> Home</a>
+    <a href="{{ url_for('principal.current_report') }}"   class="nav-item {% if active_tab=='current'  %}active{% endif %}"><span class="ni">📊</span> Current report</a>
+    <a href="{{ url_for('principal.previous_reports') }}" class="nav-item {% if active_tab=='previous' %}active{% endif %}"><span class="ni">🗂️</span> Previous reports</a>
+    <a href="{{ url_for('principal.control') }}"          class="nav-item {% if active_tab=='control'  %}active{% endif %}"><span class="ni">🛠️</span> Control</a>
+    <a href="{{ url_for('principal.messages') }}"         class="nav-item {% if active_tab=='messages' %}active{% endif %}"><span class="ni">💬</span> Messages</a>
+    <a href="{{ url_for('principal.contact') }}"          class="nav-item {% if active_tab=='contact'  %}active{% endif %}"><span class="ni">✉️</span> Contact</a>
+    <a href="{{ url_for('principal.help_page') }}"        class="nav-item {% if active_tab=='help'     %}active{% endif %}"><span class="ni">❓</span> Help</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="{{ url_for('auth.logout') }}">Logout</a>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="main">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">
+        {% if active_tab=='home'    %}School overview
+        {% elif active_tab=='current' %}Current report
+        {% elif active_tab=='previous'%}Previous reports
+        {% elif active_tab=='control' %}School controls
+        {% elif active_tab=='messages'%}Messages
+        {% elif active_tab=='contact' %}Contact us
+        {% else %}Help &amp; guide{% endif %}
+      </div>
+      <div class="topbar-meta">{{ user.school_name }} · {{ user.sector }} sector</div>
+    </div>
+    <span class="topbar-badge">Principal</span>
+  </div>
+
+  <div class="content">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <!-- ══════════════════════════════════════════
+         HOME
+    ══════════════════════════════════════════ -->
+    {% if active_tab == 'home' %}
+    <div class="card">
+      <div class="welcome-hero">
+        <div class="avatar principal">🏫</div>
+        <div>
+          <h2>Hello, {{ user.full_name.split()[0] }}!</h2>
+          <p>{{ user.school_name }} · {{ user.sector }} sector</p>
+        </div>
+      </div>
+      <p style="font-size:14px;color:var(--muted);line-height:1.8;max-width:640px">
+        Welcome to your school dashboard.
+      </p>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi-label">Your school</div>
+        <div class="kpi-val" style="font-size:18px;margin-top:6px">{{ user.school_name }}</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Registered classes</div>
+        <div class="kpi-val">{{ num_classes }}</div>
+        <div class="kpi-sub">Active classes</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Sector</div>
+        <div class="kpi-val" style="font-size:18px;margin-top:6px">{{ user.sector }}</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Role</div>
+        <div class="kpi-val" style="font-size:18px;margin-top:6px">Principal</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Quick actions</div>
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+        <a href="{{ url_for('principal.current_report') }}"   class="btn btn-primary">📊 View current report</a>
+        <a href="{{ url_for('principal.previous_reports') }}" class="btn btn-secondary">🗂️ Previous reports</a>
+        <a href="{{ url_for('principal.download_school_report') }}" class="btn btn-secondary">⬇ Download school CSV</a>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         CURRENT REPORT
+    ══════════════════════════════════════════ -->
+    {% elif active_tab == 'current' %}
+
+    <!-- Class selector -->
+    <div class="card" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div>
+        <div class="card-title">Select a class</div>
+        <div class="card-sub">View the latest prediction for one class, or scroll down for the school-wide summary.</div>
+      </div>
+      <form method="POST" action="{{ url_for('principal.current_report') }}" class="class-selector">
+        <div class="select-wrap">
+          <select name="class_name">
+            <option value="">All classes</option>
+            {% for cls in classes %}
+            <option value="{{ cls }}" {% if cls == selected %}selected{% endif %}>{{ cls }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">🔍 Check updated report</button>
+      </form>
+    </div>
+
+    <!-- Per-class report -->
+    {% if selected and class_pred %}
+    <div class="section-divider"><span>{{ selected }} — class report</span></div>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Total students</div><div class="kpi-val">{{ class_pred.total_students }}</div></div>
+      <div class="kpi danger"><div class="kpi-label">At dropout risk</div><div class="kpi-val">{{ class_pred.dropout_count }}</div>
+        <div class="kpi-sub">{{ "%.0f"|format(class_pred.dropout_count / class_pred.total_students * 100) if class_pred.total_students }}%</div></div>
+      <div class="kpi warn"><div class="kpi-label">High risk</div><div class="kpi-val">{{ class_pred.high_risk }}</div></div>
+      <div class="kpi good"><div class="kpi-label">Not at risk</div><div class="kpi-val">{{ class_pred.non_dropout }}</div></div>
+    </div>
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title">Dropout split — {{ selected }}</div>
+        <canvas id="classSplitChart" height="200"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Risk levels — {{ selected }}</div>
+        <canvas id="classRiskChart" height="200"></canvas>
+      </div>
+    </div>
+
+    {% if class_pred.result_data %}
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+        <div class="card-title">{{ selected }} — student results</div>
+        <a href="{{ url_for('principal.download_report', pred_id=class_pred.id) }}" class="btn btn-secondary btn-sm">⬇ Download CSV</a>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Name</th><th>Gender</th><th>Class level</th><th>Dropout</th><th>Risk</th><th>Probability</th><th></th></tr></thead>
+          <tbody>
+            {% for r in class_pred.result_data %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ r.name }}</td>
+              <td>{{ r.gender }}</td>
+              <td>{{ r.class_level }}</td>
+              <td><span class="badge badge-{{ 'high' if r.dropout_predicted else 'low' }}">{{ 'Yes' if r.dropout_predicted else 'No' }}</span></td>
+              <td><span class="badge badge-{{ r.risk_level }}">{{ r.risk_level|capitalize }}</span></td>
+              <td style="font-family:'JetBrains Mono',monospace;font-size:12px">{{ "%.1f"|format(r.dropout_probability * 100) }}%</td>
+              <td><button class="btn btn-secondary btn-sm" onclick="toggleExpand(this)">▾ Reason</button></td>
+            </tr>
+            <tr class="expand-row">
+              <td class="expand-cell" colspan="8"><strong>Reason:</strong> {{ r.reason }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
+    {% elif selected and not class_pred %}
+    <div class="card"><div class="empty"><div class="empty-icon">📋</div><h3>No report for {{ selected }}</h3><p>The teacher for this class hasn't generated a prediction yet.</p></div></div>
+    {% endif %}
+
+    <!-- School-wide summary -->
+    {% if school_agg %}
+    <div class="section-divider"><span>School-wide summary — all classes</span></div>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Total students</div><div class="kpi-val">{{ school_agg.total_students }}</div><div class="kpi-sub">Across {{ school_agg.classes }} classes</div></div>
+      <div class="kpi danger"><div class="kpi-label">At dropout risk</div><div class="kpi-val">{{ school_agg.dropout_count }}</div>
+        <div class="kpi-sub">{{ "%.0f"|format(school_agg.dropout_count / school_agg.total_students * 100) if school_agg.total_students }}%</div></div>
+      <div class="kpi warn"><div class="kpi-label">High risk</div><div class="kpi-val">{{ school_agg.high_risk }}</div></div>
+      <div class="kpi good"><div class="kpi-label">Not at risk</div><div class="kpi-val">{{ school_agg.non_dropout }}</div></div>
+    </div>
+    <div class="kpi-grid-3">
+      <div class="kpi warn"><div class="kpi-label">Medium risk</div><div class="kpi-val">{{ school_agg.medium_risk }}</div></div>
+      <div class="kpi good"><div class="kpi-label">Low risk</div><div class="kpi-val">{{ school_agg.low_risk }}</div></div>
+      <div class="kpi"><div class="kpi-label">Male / Female</div><div class="kpi-val" style="font-size:18px;margin-top:6px">{{ school_agg.male_count }} / {{ school_agg.female_count }}</div></div>
+    </div>
+
+    <!-- Per-class cards -->
+    <div class="card-title" style="margin-bottom:14px">Breakdown by class</div>
+    <div class="class-grid">
+      {% for p in all_preds %}
+      <a href="{{ url_for('principal.current_report') }}?class_name={{ p.class_name }}" class="class-card">
+        <div class="cc-name">{{ p.class_name }}</div>
+        <div class="cc-stats">{{ p.total_students }} students · {{ p.predicted_at.strftime('%d %b') }}</div>
+        <div class="cc-risk">
+          <span class="badge badge-high">H: {{ p.high_risk }}</span>
+          <span class="badge badge-medium">M: {{ p.medium_risk }}</span>
+          <span class="badge badge-low">L: {{ p.low_risk }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+    <!-- School charts -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title">School-wide dropout split</div>
+        <canvas id="schoolSplitChart" height="200"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Risk distribution by class</div>
+        <canvas id="schoolClassChart" height="200"></canvas>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;margin-bottom:20px">
+      <a href="{{ url_for('principal.download_school_report') }}" class="btn btn-secondary">⬇ Download full school report</a>
+    </div>
+
+    {% else %}
+    <div class="card"><div class="empty"><div class="empty-icon">📊</div><h3>No predictions yet</h3><p>Teachers in your school need to upload data and generate reports first.</p></div></div>
+    {% endif %}
+
+    <!-- Charts script -->
+    {% if school_agg or (selected and class_pred) %}
+    <script>
+    const C = { teal:'#0a6b55', red:'#c0392b', amber:'#d97706', green:'#1a7a4a' };
+    const baseOpts = { plugins:{ legend:{ position:'bottom', labels:{ font:{size:12}, padding:12 }}}, responsive:true };
+
+    {% if selected and class_pred %}
+    new Chart(document.getElementById('classSplitChart'), {
+      type:'doughnut',
+      data:{ labels:['At risk','Not at risk'], datasets:[{ data:[{{ class_pred.dropout_count }},{{ class_pred.non_dropout }}], backgroundColor:[C.red,C.green], borderWidth:0 }]},
+      options: baseOpts
+    });
+    new Chart(document.getElementById('classRiskChart'), {
+      type:'bar',
+      data:{ labels:['High','Medium','Low'], datasets:[{ data:[{{ class_pred.high_risk }},{{ class_pred.medium_risk }},{{ class_pred.low_risk }}], backgroundColor:[C.red,C.amber,C.green], borderRadius:6 }]},
+      options:{ ...baseOpts, plugins:{ legend:{display:false} }, scales:{ y:{ beginAtZero:true, grid:{ color:'#eee' }}}}
+    });
+    {% endif %}
+
+    {% if school_agg %}
+    new Chart(document.getElementById('schoolSplitChart'), {
+      type:'doughnut',
+      data:{ labels:['At risk','Not at risk'], datasets:[{ data:[{{ school_agg.dropout_count }},{{ school_agg.non_dropout }}], backgroundColor:[C.red,C.green], borderWidth:0 }]},
+      options: baseOpts
+    });
+
+    const classLabels = {{ all_preds | map(attribute='class_name') | list | tojson }};
+    const classHigh   = {{ all_preds | map(attribute='high_risk')   | list | tojson }};
+    const classMed    = {{ all_preds | map(attribute='medium_risk')  | list | tojson }};
+    const classLow    = {{ all_preds | map(attribute='low_risk')     | list | tojson }};
+    new Chart(document.getElementById('schoolClassChart'), {
+      type:'bar',
+      data:{ labels: classLabels, datasets:[
+        { label:'High',   data: classHigh, backgroundColor: C.red,   borderRadius:4 },
+        { label:'Medium', data: classMed,  backgroundColor: C.amber, borderRadius:4 },
+        { label:'Low',    data: classLow,  backgroundColor: C.green, borderRadius:4 },
+      ]},
+      options:{ ...baseOpts, scales:{ x:{ stacked:true }, y:{ stacked:true, beginAtZero:true, grid:{ color:'#eee' }}}}
+    });
+    {% endif %}
+    </script>
+    {% endif %}
+
+    <!-- ══════════════════════════════════════════
+         PREVIOUS REPORTS
+    ══════════════════════════════════════════ -->
+    {% elif active_tab == 'previous' %}
+
+    <!-- Filter bar -->
+    <div class="card" style="padding:16px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <span style="font-size:13px;color:var(--muted)">Filter by class:</span>
+      <form method="GET" action="{{ url_for('principal.previous_reports') }}" class="class-selector" style="margin:0">
+        <div class="select-wrap">
+          <select name="class_name" onchange="this.form.submit()">
+            <option value="">All classes</option>
+            {% for cls in classes %}
+            <option value="{{ cls }}" {% if cls == selected %}selected{% endif %}>{{ cls }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </form>
+      {% if selected %}<a href="{{ url_for('principal.previous_reports') }}" class="btn btn-secondary btn-sm">✕ Clear</a>{% endif %}
+    </div>
+
+    {% if predictions %}
+      {% for p in predictions %}
+      <div class="report-card">
+        <div>
+          <div style="font-size:14px;font-weight:500">{{ p.class_name }} · {{ p.predicted_at.strftime('%d %B %Y, %H:%M') }}</div>
+          <div class="rc-meta">{{ p.school_name }}</div>
+          <div class="rc-stats" style="margin-top:8px">
+            <div>Students: <span>{{ p.total_students }}</span></div>
+            <div>At risk: <span style="color:var(--red)">{{ p.dropout_count }}</span></div>
+            <div>High: <span style="color:var(--red)">{{ p.high_risk }}</span></div>
+            <div>Medium: <span style="color:var(--amber)">{{ p.medium_risk }}</span></div>
+          </div>
+        </div>
+        <a href="{{ url_for('principal.download_report', pred_id=p.id) }}" class="btn btn-secondary btn-sm">⬇ Download</a>
+      </div>
+      {% endfor %}
+    {% else %}
+    <div class="card"><div class="empty"><div class="empty-icon">🗂️</div><h3>No reports found</h3><p>{% if selected %}No reports for {{ selected }} yet.{% else %}No reports have been generated for your school yet.{% endif %}</p></div></div>
+    {% endif %}
+
+    <!-- ══════════════════════════════════════════
+         CONTROL
+    ══════════════════════════════════════════ -->
+    {% elif active_tab == 'control' %}
+
+    <div class="card">
+      <div class="card-title">Teacher admissions & account control</div>
+      <div class="card-sub">Review teachers registered for {{ user.school_name }} and admit, activate, disable or decline accounts.</div>
+    </div>
+
+    {% if teachers %}
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:16px 20px;border-bottom:1px solid var(--border)">
+        <div class="card-title">Teacher accounts</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Class</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            {% for t in teachers %}
+            <tr>
+              <td>{{ t.full_name }}</td>
+              <td>{{ t.email }}</td>
+              <td>{{ t.class_name }}</td>
+              <td>{{ t.account_status|capitalize }}</td>
+              <td>
+                <form method="POST" action="{{ url_for('principal.control_teacher', teacher_id=t.id) }}" style="display:inline-flex;gap:6px">
+                  {% if t.account_status == 'pending' %}
+                    <button type="submit" name="action" value="approve" class="btn btn-primary btn-sm">Admit</button>
+                    <button type="submit" name="action" value="decline" class="btn btn-secondary btn-sm">Decline</button>
+                  {% elif t.account_status == 'active' %}
+                    <button type="submit" name="action" value="disable" class="btn btn-secondary btn-sm">Disable</button>
+                  {% else %}
+                    <button type="submit" name="action" value="activate" class="btn btn-primary btn-sm">Activate</button>
+                  {% endif %}
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% else %}
+    <div class="card"><div class="empty"><div class="empty-icon">👩‍🏫</div><h3>No teacher accounts found</h3><p>Teachers register for your school and will appear here pending approval.</p></div></div>
+    {% endif %}
+
+    <div class="card" style="margin-top:20px">
+      <div class="card-title">Daily class checking updates</div>
+      <div class="card-sub">Monitor the latest daily student data uploads for each class and open the most recent report.</div>
+    </div>
+
+    {% if daily_updates %}
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Class</th><th>Teacher</th><th>Uploaded</th><th>Students</th><th>Action</th></tr></thead>
+          <tbody>
+            {% for update in daily_updates %}
+            <tr>
+              <td>{{ update.class_name }}</td>
+              <td>{{ update.teacher.full_name if update.teacher else 'Unknown' }}</td>
+              <td>{{ update.uploaded_at.strftime('%d %b %Y %H:%M') }}</td>
+              <td>{{ update.num_students or '-' }}</td>
+              <td><a href="{{ url_for('principal.daily_update', class_name=update.class_name) }}" class="btn btn-primary btn-sm">Check daily update</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% else %}
+    <div class="card"><div class="empty"><div class="empty-icon">📅</div><h3>No daily updates available</h3><p>No student data uploads have been recorded yet for your school. Ask teachers to submit the latest class file.</p></div></div>
+    {% endif %}
+
+    <div class="card" style="margin-top:20px">
+      <div class="card-title">Local leader access requests</div>
+      <div class="card-sub">Approve or deny requests from local leaders who asked for access to your school's report.</div>
+    </div>
+
+    {% if leader_requests %}
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Requested school</th><th>Requested class</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            {% for l in leader_requests %}
+            <tr>
+              <td>{{ l.full_name }}</td>
+              <td>{{ l.email }}</td>
+              <td>{{ l.requested_school_name }}</td>
+              <td>{{ l.requested_class_name or '-' }}</td>
+              <td>{{ l.access_status|capitalize }}</td>
+              <td>
+                <form method="POST" action="{{ url_for('principal.control_local_leader', leader_id=l.id) }}" style="display:inline-flex;gap:6px">
+                  <button type="submit" name="action" value="approve" class="btn btn-primary btn-sm">Approve</button>
+                  <button type="submit" name="action" value="deny" class="btn btn-secondary btn-sm">Deny</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% else %}
+    <div class="card"><div class="empty"><div class="empty-icon">🏛️</div><h3>No leader access requests</h3><p>No local leaders have requested access to your school yet.</p></div></div>
+    {% endif %}
+
+    <!-- ══════════════════════════════════════════
+         MESSAGES
+    ══════════════════════════════════════════ -->
+    {% elif active_tab == 'messages' %}
+    <div class="card">
+      <div class="card-title">Send a message to your school staff</div>
+      <div class="card-sub">Share updates with teachers and local leaders who support your school.</div>
+      <form method="POST" action="{{ url_for('principal.messages') }}" style="margin-top:20px">
+        <div class="field" style="margin-bottom:16px">
+          <label>Subject</label>
+          <input type="text" name="subject" placeholder="e.g. Report approval, urgent update" required>
+        </div>
+        <div class="field" style="margin-bottom:16px">
+          <label>Message</label>
+          <textarea name="body" rows="6" style="width:100%;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;resize:vertical;outline:none" placeholder="Write your announcement or instructions…" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send message</button>
+      </form>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         DAILY CLASS UPDATE — LIST
+    ══════════════════════════════════════════ -->
+    {% elif active_tab == 'daily-update' %}
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+        <div>
+          <div class="card-title">Daily updates for {{ class_name }}</div>
+          <div class="card-sub">All student data submissions for this class</div>
+        </div>
+        <a href="{{ url_for('principal.control') }}" class="btn btn-secondary">← Back to control</a>
+      </div>
+    </div>
+
+    {% if all_updates %}
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:16px 20px;border-bottom:1px solid var(--border)">
+        <div class="card-title">{{ all_updates|length }} update(s) recorded</div>
+        <div class="card-sub" style="margin-top:4px">Click "View" to see the student data from each submission</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Uploaded</th><th>File name</th><th>Teacher</th><th>Students</th><th>Action</th></tr></thead>
+          <tbody>
+            {% for update in all_updates %}
+            <tr>
+              <td>{{ update.uploaded_at.strftime('%d %b %Y %H:%M') }}</td>
+              <td>{{ update.file_name }}</td>
+              <td>{{ update.teacher.full_name if update.teacher else 'Unknown' }}</td>
+              <td>{{ update.num_students or '-' }}</td>
+              <td><a href="{{ url_for('principal.daily_update_detail', class_name=class_name, file_id=update.id) }}" class="btn btn-primary btn-sm">View</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% else %}
+    <div class="card"><div class="empty"><div class="empty-icon">📅</div><h3>No updates found</h3><p>No student data submissions have been recorded for {{ class_name }} yet.</p></div></div>
+    {% endif %}
+
+    <!-- ══════════════════════════════════════════
+         DAILY CLASS UPDATE — DETAIL
+    ══════════════════════════════════════════ -->
+    {% elif active_tab == 'daily-update-detail' %}
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+        <div>
+          <div class="card-title">{{ class_name }} — Daily update details</div>
+          <div class="card-sub">Submitted by {{ teacher_name }}</div>
+        </div>
+        <a href="{{ url_for('principal.daily_update', class_name=class_name) }}" class="btn btn-secondary">← Back to list</a>
+      </div>
+    </div>
+
+    {% if file_obj %}
+    <div class="card">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:16px;display:flex;gap:24px;flex-wrap:wrap">
+        <div>📅 <strong>Uploaded:</strong> {{ file_obj.uploaded_at.strftime('%d %B %Y at %H:%M') }}</div>
+        <div>📊 <strong>Students:</strong> {{ file_obj.num_students or 'N/A' }}</div>
+        <div>📁 <strong>File:</strong> {{ file_obj.file_name }}</div>
+      </div>
+    </div>
+
+    {% if students %}
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:16px 20px;border-bottom:1px solid var(--border)">
+        <div class="card-title">Student records</div>
+        <div class="card-sub" style="margin-top:4px">{{ students|length }} students in this submission</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              {% for col in columns %}
+              <th>{{ col }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for student in students %}
+            <tr>
+              {% for col in columns %}
+              <td>{{ student.get(col, '-')|string }}</td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% else %}
+    <div class="card"><div class="empty"><div class="empty-icon">📄</div><h3>Could not display data</h3><p>The file could not be parsed. Please check the file format.</p></div></div>
+    {% endif %}
+
+    {% else %}
+    <div class="card"><div class="empty"><div class="empty-icon">📅</div><h3>No data available</h3><p>Could not load the update details.</p></div></div>
+    {% endif %}
+
+    <!-- ══════════════════════════════════════════
+         CONTACT
+    ══════════════════════════════════════════ -->
+    {% elif active_tab == 'contact' %}
+    <div class="card">
+      <div class="card-title">Find us on social media</div>
+      <div class="social-row" style="margin-top:14px">
+        <a href="#" class="social-pill">🐦 Twitter / X</a>
+        <a href="#" class="social-pill">💼 LinkedIn</a>
+        <a href="#" class="social-pill">📘 Facebook</a>
+        <a href="#" class="social-pill">📸 Instagram</a>
+        <a href="mailto:support@eduguard.rw" class="social-pill">✉️ support@eduguard.rw</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:18px">Send a message</div>
+      <form method="POST" action="{{ url_for('principal.contact') }}">
+        <div style="margin-bottom:14px"><label style="display:block;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:7px">Subject</label><input type="text" name="subject" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none" placeholder="e.g. Technical issue, Feature request…"></div>
+        <div style="margin-bottom:16px"><label style="display:block;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:7px">Message</label><textarea name="message" rows="5" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;resize:vertical;outline:none" placeholder="Describe your issue or feedback…"></textarea></div>
+        <button type="submit" class="btn btn-primary">Send message</button>
+      </form>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         HELP
+    ══════════════════════════════════════════ -->
+    {% elif active_tab == 'help' %}
+    <div class="card">
+      <div class="card-title" style="margin-bottom:20px">How to use EduGuard as a Principal</div>
+      <div class="step"><div class="step-num">1</div><div class="step-body"><h4>View a class report</h4><p>Go to <strong>Current Report</strong>, select a class from the dropdown, and click <strong>Check updated report</strong>. This displays the latest ML prediction results for that class — generated by the class teacher.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><h4>View the school-wide summary</h4><p>Scroll below the class selector to see the <strong>school-wide aggregated report</strong> — total students, overall dropout risk, and per-class breakdown cards showing high / medium / low risk counts.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Identify high-risk classes</h4><p>The class breakdown cards are clickable — click any class card to jump straight to its detailed prediction table with per-student results.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Download reports</h4><p>Download a single class's results as CSV, or click <strong>Download full school report</strong> to get a merged CSV of all classes in your school.</p></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-body"><h4>Browse historical reports</h4><p>Go to <strong>Previous Reports</strong> to see all past predictions for your school. Use the class filter to narrow by class, and download any individual report as CSV.</p></div></div>
+    </div>
+    {% endif %}
+
+  </div>
+</main>
+
+<script>
+function toggleExpand(btn) {
+  const expandRow = btn.closest('tr').nextElementSibling;
+  if (!expandRow) return;
+  expandRow.classList.toggle('open');
+  btn.textContent = expandRow.classList.contains('open') ? '▴ Reason' : '▾ Reason';
+}
+</script>
+</body>
+</html>

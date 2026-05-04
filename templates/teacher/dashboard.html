@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher-Dashboard-EduGuard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --ink:      #0d1f1a;
+  --teal:     #0a6b55;
+  --teal-dk:  #085c49;
+  --teal-lt:  #e6f4f0;
+  --teal-md:  #b3ddd4;
+  --gold:     #c8973a;
+  --muted:    #5a7068;
+  --border:   #d0deda;
+  --bg:       #f5f8f7;
+  --white:    #ffffff;
+  --red:      #c0392b;
+  --red-lt:   #fdecea;
+  --amber:    #d97706;
+  --amber-lt: #fffbeb;
+  --green:    #1a7a4a;
+  --green-lt: #e8f5ee;
+  --sidebar-w: 220px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); display: flex; min-height: 100vh; }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--teal);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 100;
+}
+.sidebar-brand {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  display: flex; align-items: center; gap: 10px;
+}
+.sidebar-brand .icon { width: 36px; height: 36px; background: var(--gold); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.sidebar-brand .name { font-family: 'DM Serif Display', serif; color: #fff; font-size: 16px; line-height: 1.2; }
+.sidebar-brand .sub  { font-size: 10px; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .07em; }
+
+.sidebar-user {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+}
+.sidebar-user .u-name  { font-size: 13px; font-weight: 500; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-user .u-class { font-size: 11px; color: rgba(255,255,255,.55); margin-top: 2px; }
+
+nav { flex: 1; padding: 12px 10px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: rgba(255,255,255,.7);
+  font-size: 13.5px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .15s, color .15s;
+  margin-bottom: 2px;
+}
+.nav-item:hover  { background: rgba(255,255,255,.1); color: #fff; }
+.nav-item.active { background: rgba(255,255,255,.18); color: #fff; font-weight: 500; }
+.nav-item .ni    { font-size: 17px; width: 22px; text-align: center; flex-shrink: 0; }
+
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255,255,255,.12);
+}
+.sidebar-footer a {
+  font-size: 12px; color: rgba(255,255,255,.5);
+  text-decoration: none; display: flex; align-items: center; gap: 6px;
+}
+.sidebar-footer a:hover { color: #fff; }
+
+/* ── Main content ── */
+.main { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; }
+.topbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 50;
+}
+.topbar-title { font-family: 'DM Serif Display', serif; font-size: 18px; }
+.topbar-school { font-size: 12px; color: var(--muted); }
+
+.content { padding: 32px; }
+
+/* ── Cards ── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.card-title { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+.card-sub   { font-size: 13px; color: var(--muted); }
+
+/* ── KPI grid ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+.kpi {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+}
+.kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin-bottom: 6px; }
+.kpi-val   { font-family: 'DM Serif Display', serif; font-size: 32px; color: var(--ink); line-height: 1; }
+.kpi-sub   { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.kpi.danger .kpi-val  { color: var(--red); }
+.kpi.warn   .kpi-val  { color: var(--amber); }
+.kpi.good   .kpi-val  { color: var(--green); }
+
+/* ── Flash ── */
+.flash { padding: 11px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 18px; line-height: 1.5; }
+.flash.error   { background: var(--red-lt);   color: var(--red);   border-left: 3px solid var(--red); }
+.flash.success { background: var(--green-lt); color: var(--green); border-left: 3px solid var(--green); }
+.flash.info    { background: var(--teal-lt);  color: var(--teal);  border-left: 3px solid var(--teal); }
+.flash.warning { background: var(--amber-lt); color: var(--amber); border-left: 3px solid var(--amber); }
+
+/* ── Buttons ── */
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13.5px; font-weight: 500; cursor: pointer; border: none; transition: background .15s, transform .1s; text-decoration: none; }
+.btn:active { transform: translateY(1px); }
+.btn-primary   { background: var(--teal);  color: #fff; }
+.btn-primary:hover { background: var(--teal-dk); }
+.btn-secondary { background: var(--bg); color: var(--ink); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--teal-lt); border-color: var(--teal); }
+.btn-danger    { background: var(--red-lt); color: var(--red); }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+
+/* ── Upload zone ── */
+.upload-zone {
+  border: 2px dashed var(--teal-md);
+  border-radius: 10px;
+  padding: 32px;
+  text-align: center;
+  background: var(--teal-lt);
+  cursor: pointer;
+  transition: border-color .18s, background .18s;
+  margin-bottom: 20px;
+}
+.upload-zone:hover { border-color: var(--teal); background: #d0ece6; }
+.upload-zone .uz-icon { font-size: 36px; margin-bottom: 10px; }
+.upload-zone p { font-size: 14px; color: var(--muted); }
+.upload-zone strong { color: var(--teal); }
+
+/* ── Editable table ── */
+.table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th {
+  background: var(--bg);
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+tbody td {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--teal-lt); }
+td[contenteditable="true"] { outline: none; cursor: text; }
+td[contenteditable="true"]:focus { background: #fff; box-shadow: inset 0 0 0 2px var(--teal); border-radius: 4px; }
+.row-actions { display: flex; gap: 6px; }
+
+/* ── Risk badges ── */
+.badge { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.badge-high   { background: var(--red-lt);   color: var(--red); }
+.badge-medium { background: var(--amber-lt); color: var(--amber); }
+.badge-low    { background: var(--green-lt); color: var(--green); }
+.badge-yes    { background: var(--red-lt);   color: var(--red); }
+.badge-no     { background: var(--green-lt); color: var(--green); }
+
+/* ── Modal ── */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 200; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal { background: #fff; border-radius: 14px; padding: 28px; width: 480px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
+.modal h3 { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 20px; }
+.modal .field { margin-bottom: 14px; }
+.modal .field label { display: block; font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 6px; }
+.modal .field input, .modal .field select {
+  width: 100%; padding: 9px 12px; border: 1.5px solid var(--border);
+  border-radius: 7px; font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none;
+  transition: border-color .15s;
+}
+.modal .field input:focus, .modal .field select:focus { border-color: var(--teal); }
+.modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+/* ── Charts row ── */
+.charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.chart-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.chart-title { font-size: 13px; font-weight: 500; margin-bottom: 14px; }
+
+/* ── Report table ── */
+.report-table tbody td:first-child { font-weight: 500; }
+.expand-row { display: none; background: var(--bg); }
+.expand-row.open { display: table-row; }
+.expand-cell { padding: 12px 20px; font-size: 12px; color: var(--muted); }
+
+/* ── Previous reports list ── */
+.report-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.report-card:hover { border-color: var(--teal); }
+.rc-meta { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.rc-stats { display: flex; gap: 16px; font-size: 12px; color: var(--muted); }
+.rc-stat span { font-weight: 500; color: var(--ink); }
+
+/* ── Help steps ── */
+.step { display: flex; gap: 16px; margin-bottom: 20px; }
+.step-num { width: 32px; height: 32px; border-radius: 50%; background: var(--teal); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; flex-shrink: 0; }
+.step-body h4 { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+.step-body p  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* ── Contact form ── */
+.social-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+.social-pill { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; text-decoration: none; color: var(--ink); transition: border-color .15s; }
+.social-pill:hover { border-color: var(--teal); color: var(--teal); }
+
+/* ── Home welcome ── */
+.welcome-hero { display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
+.avatar { width: 60px; height: 60px; background: var(--teal); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
+.welcome-hero h2 { font-family: 'DM Serif Display', serif; font-size: 26px; }
+.welcome-hero p  { font-size: 14px; color: var(--muted); margin-top: 4px; }
+
+/* ── Empty state ── */
+.empty { text-align: center; padding: 48px 20px; }
+.empty-icon { font-size: 48px; margin-bottom: 12px; }
+.empty h3   { font-size: 16px; margin-bottom: 6px; }
+.empty p    { font-size: 13px; color: var(--muted); }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+.content > * { animation: fadeUp .3s ease both; }
+</style>
+</head>
+<body>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="icon">🎓</div>
+    <div>
+      <div class="name">EduGuard</div>
+      <div class="sub">Rwanda</div>
+    </div>
+  </div>
+  <div class="sidebar-user">
+    <div class="u-name">{{ user.full_name }}</div>
+    <div class="u-class">{{ user.class_name }} · {{ user.school_name }}</div>
+  </div>
+  <nav>
+    <a href="{{ url_for('teacher.home') }}"             class="nav-item {% if active_tab=='home'     %}active{% endif %}"><span class="ni">🏠</span> Home</a>
+    <a href="{{ url_for('teacher.daily_checking') }}"   class="nav-item {% if active_tab=='daily'    %}active{% endif %}"><span class="ni">📋</span> Daily checking</a>
+    <a href="{{ url_for('teacher.current_report') }}"   class="nav-item {% if active_tab=='current'  %}active{% endif %}"><span class="ni">📊</span> Current report</a>
+    <a href="{{ url_for('teacher.previous_reports') }}" class="nav-item {% if active_tab=='previous' %}active{% endif %}"><span class="ni">🗂️</span> Previous reports</a>
+    <a href="{{ url_for('teacher.contact') }}"          class="nav-item {% if active_tab=='contact'  %}active{% endif %}"><span class="ni">✉️</span> Contact</a>
+    <a href="{{ url_for('teacher.help_page') }}"        class="nav-item {% if active_tab=='help'     %}active{% endif %}"><span class="ni">❓</span> Help</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="{{ url_for('auth.logout') }}">Logout</a>
+  </div>
+</aside>
+
+<!-- ── Main ── -->
+<main class="main">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">
+        {% if active_tab=='home'     %}Welcome back to EduGuard Rwanda
+        {% elif active_tab=='daily'  %}Daily checking
+        {% elif active_tab=='current'%}Current report
+        {% elif active_tab=='previous'%}Previous reports
+        {% elif active_tab=='contact'%}Contact us
+        {% else %}Help & guide
+        {% endif %}
+      </div>
+      <div class="topbar-school">{{ user.school_name }} · {{ user.sector }} sector</div>
+    </div>
+    <div style="font-size:12px;color:var(--muted)">Teacher · {{ user.class_name }}</div>
+  </div>
+
+  <div class="content">
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <!-- ════════════════════════════════════════════
+         TAB: HOME
+    ════════════════════════════════════════════ -->
+    {% if active_tab == 'home' %}
+    <div class="card">
+      <div class="welcome-hero">
+        <div class="avatar">👨‍🏫</div>
+        <div>
+          <h2>Hello, {{ user.full_name.split()[0] }}!</h2>
+          <p>{{ user.class_name }} class · {{ user.school_name }}</p>
+        </div>
+      </div>
+      <p style="font-size:14px;color:var(--muted);line-height:1.8;max-width:600px">
+        Welcome to EduGuard Rwanda's early dropout intervention platform. Where you can upload and monitor your students information to generate a dropout risk analysis for your class. 
+      </p>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Your class</div><div class="kpi-val">{{ user.class_name }}</div><div class="kpi-sub">Primary level</div></div>
+      <div class="kpi"><div class="kpi-label">School</div><div class="kpi-val" style="font-size:18px;margin-top:8px">{{ user.school_name }}</div></div>
+      <div class="kpi"><div class="kpi-label">Sector</div><div class="kpi-val" style="font-size:18px;margin-top:8px">{{ user.sector }}</div></div>
+      <div class="kpi"><div class="kpi-label">Account</div><div class="kpi-val" style="font-size:18px;margin-top:8px">Teacher</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Quick start</div>
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+        <a href="{{ url_for('teacher.daily_checking') }}" class="btn btn-primary">📋 Upload today's data</a>
+        <a href="{{ url_for('teacher.current_report') }}"  class="btn btn-secondary">📊 Check current report</a>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════
+         TAB: DAILY CHECKING
+    ════════════════════════════════════════════ -->
+    {% elif active_tab == 'daily' %}
+
+    <!-- Upload zone -->
+    <div class="card">
+      <div class="card-title">Upload student file</div>
+      <div class="card-sub" style="margin-bottom:16px">Accepted: CSV or Excel (.xlsx). </div>
+      <form method="POST" action="{{ url_for('teacher.upload_file') }}" enctype="multipart/form-data">
+        <label for="file-input">
+          <div class="upload-zone" id="drop-zone">
+            <div class="uz-icon">📁</div>
+            <p><strong>Click to browse</strong> or drag &amp; drop your file here</p>
+            <p style="margin-top:6px;font-size:12px">Max 16 MB</p>
+          </div>
+        </label>
+        <input type="file" id="file-input" name="student_file" accept=".csv,.xlsx,.xls" style="display:none" onchange="showFileName(this)">
+        <div id="file-name-display" style="font-size:13px;color:var(--teal);margin-bottom:12px;display:none"></div>
+        <div style="display:flex;gap:10px">
+          <button type="submit" class="btn btn-primary">Upload file</button>
+          <button type="button" class="btn btn-secondary" onclick="openAddModal()">➕ Add single student</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Student table -->
+    {% if students %}
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)">
+        <div>
+          <div class="card-title">{{ user.class_name }} Student list</div>
+          <div class="card-sub">{{ students|length }} students · Click any cell to edit · Save changes when done</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-danger btn-sm" onclick="deleteAllTable()">🗑️ Delete all</button>
+          <button class="btn btn-primary btn-sm" onclick="saveEdits()">💾 Save changes</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="student-table">
+          <thead>
+            <tr>
+              {% for col in columns %}
+              <th>{{ col }}</th>
+              {% endfor %}
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="student-body">
+            {% for student in students %}
+            <tr data-idx="{{ loop.index0 }}">
+              {% for col in columns %}
+              <td contenteditable="true" data-col="{{ col }}">{{ student[col] }}</td>
+              {% endfor %}
+              <td class="row-actions"><button class="btn btn-danger btn-sm" onclick="deleteStudent({{ loop.index0 }})">🗑️</button></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% else %}
+    <div class="card">
+      <div class="empty">
+        <div class="empty-icon">📂</div>
+        <h3>No student data yet</h3>
+        <p>Upload your class file above to get started.</p>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- ════════════════════════════════════════════
+         TAB: CURRENT REPORT
+    ════════════════════════════════════════════ -->
+    {% elif active_tab == 'current' %}
+
+    <div class="card" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div>
+        <div class="card-title">Generate updated report</div>
+        <div class="card-sub"> Check your class updates</div>
+      </div>
+      <form method="POST" action="{{ url_for('teacher.run_prediction_route') }}">
+        <button type="submit" class="btn btn-primary">Check updated report</button>
+      </form>
+    </div>
+
+    {% if prediction %}
+    <!-- KPI row -->
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Total students</div><div class="kpi-val">{{ prediction.total_students }}</div></div>
+      <div class="kpi danger"><div class="kpi-label">At dropout risk</div><div class="kpi-val">{{ prediction.dropout_count }}</div><div class="kpi-sub">{{ "%.0f"|format(prediction.dropout_count / prediction.total_students * 100) if prediction.total_students }}%</div></div>
+      <div class="kpi good"><div class="kpi-label">Not at risk</div><div class="kpi-val">{{ prediction.non_dropout }}</div></div>
+      <div class="kpi"><div class="kpi-label">Last run</div><div class="kpi-val" style="font-size:15px;margin-top:6px">{{ prediction.predicted_at.strftime('%d %b %Y') }}</div><div class="kpi-sub">{{ prediction.predicted_at.strftime('%H:%M') }}</div></div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi danger"><div class="kpi-label">High risk</div><div class="kpi-val">{{ prediction.high_risk }}</div></div>
+      <div class="kpi warn"><div class="kpi-label">Medium risk</div><div class="kpi-val">{{ prediction.medium_risk }}</div></div>
+      <div class="kpi good"><div class="kpi-label">Low risk</div><div class="kpi-val">{{ prediction.low_risk }}</div></div>
+      <div class="kpi"><div class="kpi-label">Male / Female</div><div class="kpi-val" style="font-size:18px;margin-top:6px">{{ prediction.male_count }} / {{ prediction.female_count }}</div></div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title">Overall dropout split</div>
+        <canvas id="splitChart" height="180"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Risk distribution</div>
+        <canvas id="riskChart" height="180"></canvas>
+      </div>
+    </div>
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title">Risk by gender</div>
+        <canvas id="genderChart" height="180"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Risk by class level</div>
+        <canvas id="levelChart" height="180"></canvas>
+      </div>
+    </div>
+
+    <!-- Results table -->
+    {% if prediction.result_data %}
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+        <div class="card-title">Prediction results — {{ prediction.result_data|length }} students</div>
+        <a href="{{ url_for('teacher.download_report', pred_id=prediction.id) }}" class="btn btn-secondary btn-sm">⬇ Download CSV</a>
+      </div>
+      <div class="table-wrap">
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Names</th>
+              <th>Gender</th>
+              <th>Class level</th>
+              <th>Dropout predicted</th>
+              <th>Risk level</th>
+              <th>Probability</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in prediction.result_data %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ r.names }}</td>
+              <td>{{ r.gender }}</td>
+              <td>{{ r.class_level }}</td>
+              <td><span class="badge badge-{{ 'yes' if r.dropout_predicted else 'no' }}">{{ 'Yes' if r.dropout_predicted else 'No' }}</span></td>
+              <td><span class="badge badge-{{ r.risk_level }}">{{ r.risk_level|capitalize }}</span></td>
+              <td style="font-family:'JetBrains Mono',monospace;font-size:12px">{{ "%.1f"|format(r.dropout_probability * 100) }}%</td>
+              <td><button class="btn btn-secondary btn-sm" onclick="toggleExpand(this)">▾ Reason</button></td>
+            </tr>
+            <tr class="expand-row">
+              <td class="expand-cell" colspan="8">
+                <strong>Reason:</strong> {{ r.reason }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Chart data -->
+    <script>
+    const pred = {
+      dropout:    {{ prediction.dropout_count }},
+      non:        {{ prediction.non_dropout }},
+      high:       {{ prediction.high_risk }},
+      medium:     {{ prediction.medium_risk }},
+      low:        {{ prediction.low_risk }},
+      male:       {{ prediction.male_count }},
+      female:     {{ prediction.female_count }},
+      results:    {{ prediction.result_data | tojson }}
+    };
+
+    const C = { teal:'#0a6b55', red:'#c0392b', amber:'#d97706', green:'#1a7a4a', muted:'#5a7068' };
+    const opts = { plugins:{ legend:{ position:'bottom', labels:{ font:{size:12}, padding:12 }}}, responsive:true };
+
+    new Chart(document.getElementById('splitChart'), {
+      type:'doughnut',
+      data:{ labels:['At risk','Not at risk'], datasets:[{ data:[pred.dropout,pred.non], backgroundColor:[C.red,C.green], borderWidth:0 }]},
+      options: opts
+    });
+    new Chart(document.getElementById('riskChart'), {
+      type:'bar',
+      data:{ labels:['High','Medium','Low'], datasets:[{ data:[pred.high,pred.medium,pred.low], backgroundColor:[C.red,C.amber,C.green], borderRadius:6 }]},
+      options:{ ...opts, plugins:{ legend:{ display:false }}, scales:{ y:{ beginAtZero:true, grid:{ color:'#eee' }}}}
+    });
+
+    // Gender risk breakdown
+    const mHigh=pred.results.filter(r=>r.gender.toLowerCase()==='male'&&r.risk_level==='high').length;
+    const fHigh=pred.results.filter(r=>r.gender.toLowerCase()==='female'&&r.risk_level==='high').length;
+    const mMed=pred.results.filter(r=>r.gender.toLowerCase()==='male'&&r.risk_level==='medium').length;
+    const fMed=pred.results.filter(r=>r.gender.toLowerCase()==='female'&&r.risk_level==='medium').length;
+    new Chart(document.getElementById('genderChart'), {
+      type:'bar',
+      data:{ labels:['Male','Female'], datasets:[
+        { label:'High risk',   data:[mHigh,fHigh], backgroundColor:C.red,   borderRadius:4 },
+        { label:'Medium risk', data:[mMed, fMed],  backgroundColor:C.amber, borderRadius:4 },
+      ]},
+      options:{ ...opts, scales:{ x:{ stacked:true }, y:{ stacked:true, beginAtZero:true, grid:{ color:'#eee' }}}}
+    });
+
+    // Class level breakdown
+    const levels = [...new Set(pred.results.map(r=>r.class_level))].sort();
+    const lvlHigh = levels.map(l=>pred.results.filter(r=>r.class_level===l&&r.risk_level==='high').length);
+    new Chart(document.getElementById('levelChart'), {
+      type:'bar',
+      data:{ labels: levels.length ? levels : ['—'], datasets:[{ label:'High risk', data: lvlHigh, backgroundColor:C.teal, borderRadius:4 }]},
+      options:{ ...opts, plugins:{ legend:{ display:false }}, scales:{ y:{ beginAtZero:true, grid:{ color:'#eee' }}}}
+    });
+    </script>
+
+    {% else %}
+    <div class="card">
+      <div class="empty">
+        <div class="empty-icon">📊</div>
+        <h3>No report yet</h3>
+        <p>Upload student data and click "Check updated report" to generate a prediction.</p>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- ════════════════════════════════════════════
+         TAB: PREVIOUS REPORTS
+    ════════════════════════════════════════════ -->
+    {% elif active_tab == 'previous' %}
+    {% if predictions %}
+    {% for p in predictions %}
+    <div class="report-card">
+      <div>
+        <div style="font-size:14px;font-weight:500">Report · {{ p.predicted_at.strftime('%d %B %Y, %H:%M') }}</div>
+        <div class="rc-meta">{{ p.class_name }} · {{ p.school_name }}</div>
+        <div class="rc-stats" style="margin-top:8px">
+          <div>Students: <span>{{ p.total_students }}</span></div>
+          <div>At risk: <span style="color:var(--red)">{{ p.dropout_count }}</span></div>
+          <div>High: <span style="color:var(--red)">{{ p.high_risk }}</span></div>
+          <div>Medium: <span style="color:var(--amber)">{{ p.medium_risk }}</span></div>
+          <div>Low: <span style="color:var(--green)">{{ p.low_risk }}</span></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-direction:column">
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-primary btn-sm" onclick="viewReport({{ p.id }})">👁️ View</button>
+          <a href="{{ url_for('teacher.download_report', pred_id=p.id) }}" class="btn btn-secondary btn-sm">⬇ Download</a>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="deleteReport({{ p.id }})">🗑️ Delete</button>
+      </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="card">
+      <div class="empty">
+        <div class="empty-icon">🗂️</div>
+        <h3>No previous reports</h3>
+        <p>Reports appear here each time you generate a prediction.</p>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- ════════════════════════════════════════════
+         TAB: CONTACT
+    ════════════════════════════════════════════ -->
+    {% elif active_tab == 'contact' %}
+    <div class="card">
+      <div class="card-title">Find us on social media</div>
+      <div class="social-row" style="margin-top:14px">
+        <a href="#" class="social-pill">🐦 Twitter / X</a>
+        <a href="#" class="social-pill">💼 LinkedIn</a>
+        <a href="#" class="social-pill">📘 Facebook</a>
+        <a href="#" class="social-pill">📸 Instagram</a>
+        <a href="mailto:support@eduguard.rw" class="social-pill">✉️ support@eduguard.rw</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:18px">Send a message</div>
+      <form method="POST" action="{{ url_for('teacher.contact') }}">
+        <div class="modal" style="padding:0;border:none;width:100%;max-width:100%">
+          <div class="field"><label>Subject</label><input type="text" name="subject" placeholder="e.g. Technical issue, Feature request…"></div>
+          <div class="field"><label>Message</label><textarea name="message" rows="5" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;resize:vertical;outline:none" placeholder="Describe your issue or feedback…"></textarea></div>
+          <button type="submit" class="btn btn-primary">Send message</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- ════════════════════════════════════════════
+         TAB: HELP
+    ════════════════════════════════════════════ -->
+    {% elif active_tab == 'help' %}
+    <div class="card">
+      <div class="card-title" style="margin-bottom:20px">How to use EduGuard — step by step</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Upload your class file</h4>
+          <p>Go to <strong>Daily Checking</strong>. Click the upload zone and select a CSV or Excel file containing your student data. The columns must match the features your ML model was trained on (e.g. attendance, grades, family info).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Review and edit the student table</h4>
+          <p>After uploading, your class list appears in an editable table. Click any cell to correct a value. When done, click <strong>Save changes</strong> — this stores a new version of the file.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Add individual students</h4>
+          <p>Use the <strong>Add single student</strong> button to open a form and add a new learner to the existing class list. They will appear in the table immediately.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h4>Generate a dropout risk report</h4>
+          <p>Go to <strong>Current Report</strong> and click <strong>Check updated report</strong>. The system merges all file versions (weighting the most recent at 70%) and runs the ML model. This may take a few seconds.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h4>Interpret the results</h4>
+          <p>The report shows each student's dropout prediction, risk level (High / Medium / Low), and the probability score. Click <strong>▾ Reason</strong> to expand a student's row for more detail. Download the full table as CSV using the download button.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <h4>Access historical reports</h4>
+          <p>Every generated report is saved automatically. Go to <strong>Previous Reports</strong> to view past predictions — filtered to your class — and download any of them as CSV.</p>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+  </div><!-- /content -->
+</main>
+
+<!-- ── Add student modal ── -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <h3>Add a new student</h3>
+    <form id="add-student-form">
+      <div class="field">
+        <label>Names</label>
+        <input type="text" name="Names" required placeholder="Student full name">
+      </div>
+      <div class="field">
+        <label>Child_Age</label>
+        <select name="Child_Age" required>
+          <option value="">Select age group</option>
+          <option value="20 - 21">20 - 21</option>
+          <option value="17 - 19">17 - 19</option>
+          <option value="14 - 16">14 - 16</option>
+          <option value="13-Jun">13-Jun</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Child_Gender</label>
+        <select name="Child_Gender" required>
+          <option value="">Select gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Year_of_Study</label>
+        <select name="Year_of_Study" required>
+          <option value="">Select year</option>
+          <option value="Primary">Primary</option>
+          <option value="Lower  Secondary">Lower Secondary</option>
+          <option value="Upper  Secondary">Upper Secondary</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Performance</label>
+        <select name="Performance" required>
+          <option value="">Select performance</option>
+          <option value="71-100">71-100 (Excellent)</option>
+          <option value="61-70">61-70 (Very Good)</option>
+          <option value="51-60">51-60 (Good)</option>
+          <option value="41-50">41-50 (Fair)</option>
+          <option value="0-40">0-40 (Poor)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Social_activity</label>
+        <select name="Social_activity" required>
+          <option value="">Select activity</option>
+          <option value="Sport">Sport</option>
+          <option value="Dance">Dance</option>
+          <option value="Other">Other</option>
+           <option value="None">None</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Lack_of_School_Material</label>
+        <select name="Lack_of_School_Material" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Lack_of_School_Fees</label>
+        <select name="Lack_of_School_Fees" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Job_opportunity</label>
+        <select name="Job_opportunity" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Pregnancy</label>
+        <select name="Pregnancy" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Family_conflicts</label>
+        <select name="Family_conflicts" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Drug_abuse</label>
+        <select name="Drug_abuse" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Lack_of_motivation</label>
+        <select name="Lack_of_motivation" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Illness</label>
+        <select name="Illness" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Absenteism</label>
+        <select name="Absenteism" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Bad_Discipline</label>
+        <select name="Bad_Discipline" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeAddModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitNewStudent()">Add student</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── View report modal ── -->
+<div class="modal-overlay" id="view-modal">
+  <div class="modal" style="width:90vw;max-width:1200px">
+    <h3>Report Details</h3>
+    <div class="table-wrap" style="max-height:70vh;overflow-y:auto">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Class level</th>
+            <th>Dropout predicted</th>
+            <th>Risk level</th>
+            <th>Probability</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="view-tbody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeViewModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── File name display ─────────────────────────────────────────
+function showFileName(input) {
+  const el = document.getElementById('file-name-display');
+  if (input.files[0]) {
+    el.textContent = '📄 ' + input.files[0].name;
+    el.style.display = 'block';
+  }
+}
+
+// ── Drag & drop ───────────────────────────────────────────────
+const dropZone = document.getElementById('drop-zone');
+if (dropZone) {
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.borderColor = 'var(--teal)'; });
+  dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = ''; });
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    const fi = document.getElementById('file-input');
+    fi.files = e.dataTransfer.files;
+    showFileName(fi);
+    dropZone.style.borderColor = '';
+  });
+}
+
+// ── Save edits ────────────────────────────────────────────────
+function saveEdits() {
+  const rows = document.querySelectorAll('#student-body tr');
+  const students = [];
+  const headers  = [...document.querySelectorAll('#student-table thead th')].map(th => th.textContent.trim());
+  rows.forEach(row => {
+    const obj = {};
+    row.querySelectorAll('td[data-col]').forEach(td => { obj[td.dataset.col] = td.textContent.trim(); });
+    students.push(obj);
+  });
+  fetch('{{ url_for("teacher.update_student") }}', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ students })
+  }).then(r => r.json()).then(d => {
+    alert(d.ok ? '✅ ' + d.msg : '❌ ' + d.msg);
+  });
+}
+function deleteStudent(index) {
+  if (!confirm('Remove this student permanently from the table?')) return;
+  fetch('{{ url_for("teacher.delete_student") }}', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ index })
+  })
+  .then(resp => resp.json())
+  .then(data => {
+    if (data.ok) {
+      alert('✅ ' + data.msg);
+      window.location.reload();
+    } else {
+      alert('❌ ' + data.msg);
+    }
+  });
+}
+
+function deleteAllTable() {
+  if (!confirm('Delete full table data for this class? This cannot be undone.')) return;
+  fetch('{{ url_for("teacher.delete_all_students") }}', {
+    method: 'POST'
+  })
+  .then(() => window.location.reload());
+}
+// ── Add student modal ─────────────────────────────────────────
+const COLUMNS = {{ columns | tojson if columns is defined else '[]' }};
+
+function openAddModal() {
+  // Reset form
+  document.getElementById('add-student-form').reset();
+  document.getElementById('add-modal').classList.add('open');
+}
+
+function closeAddModal() {
+  document.getElementById('add-modal').classList.remove('open');
+}
+
+function submitNewStudent() {
+  const form = document.getElementById('add-student-form');
+  const formData = new FormData(form);
+  const student = {};
+  
+  for (let [key, value] of formData.entries()) {
+    student[key] = value;
+  }
+  
+  // Validate required fields
+  const requiredFields = ['Names', 'Child_Age', 'Child_Gender', 'Year_of_Study', 'Performance', 'Social_activity'];
+  for (let field of requiredFields) {
+    if (!student[field] || student[field] === '') {
+      alert(`Please fill in the ${field.replace('_', ' ')} field.`);
+      return;
+    }
+  }
+  
+  fetch('{{ url_for("teacher.add_student") }}', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(student)
+  }).then(r => r.json()).then(d => {
+    if (d.ok) {
+      alert('✅ ' + d.msg);
+      closeAddModal();
+      window.location.reload(); // Reload to show the new student
+    } else {
+      alert('❌ ' + d.msg);
+    }
+  }).catch(err => {
+    alert('❌ Error adding student: ' + err.message);
+  });
+}
+
+// Click outside modal to close
+document.getElementById('add-modal')?.addEventListener('click', function(e) {
+  if (e.target === this) closeAddModal();
+});
+document.getElementById('view-modal')?.addEventListener('click', function(e) {
+  if (e.target === this) closeViewModal();
+});
+
+// ── Expand reason row ─────────────────────────────────────────
+function toggleExpand(btn) {
+  const expandRow = btn.closest('tr').nextElementSibling;
+  if (!expandRow) return;
+  expandRow.classList.toggle('open');
+  btn.textContent = expandRow.classList.contains('open') ? '▴ Reason' : '▾ Reason';
+}
+
+// ── View report modal ─────────────────────────────────────────
+function viewReport(predId) {
+  fetch(`{{ url_for('teacher.get_report_data', pred_id=0) }}`.replace('0', predId))
+    .then(resp => resp.json())
+    .then(data => {
+      if (data.error) {
+        alert('Error: ' + data.error);
+        return;
+      }
+      const modal = document.getElementById('view-modal');
+      const tbody = document.getElementById('view-tbody');
+      tbody.innerHTML = data.map((r, i) => `
+        <tr>
+          <td>${i+1}</td>
+          <td>${r.name}</td>
+          <td>${r.gender}</td>
+          <td>${r.class_level}</td>
+          <td><span class="badge badge-${r.dropout_predicted ? 'yes' : 'no'}">${r.dropout_predicted ? 'Yes' : 'No'}</span></td>
+          <td><span class="badge badge-${r.risk_level}">${r.risk_level.charAt(0).toUpperCase() + r.risk_level.slice(1)}</span></td>
+          <td style="font-family:'JetBrains Mono',monospace;font-size:12px">${(r.dropout_probability * 100).toFixed(1)}%</td>
+          <td><button class="btn btn-secondary btn-sm" onclick="toggleExpand(this)">▾ Reason</button></td>
+        </tr>
+        <tr class="expand-row">
+          <td class="expand-cell" colspan="8"><strong>Reason:</strong> ${r.reason}</td>
+        </tr>
+      `).join('');
+      modal.classList.add('open');
+    });
+}
+
+function closeViewModal() {
+  document.getElementById('view-modal').classList.remove('open');
+}
+
+// ── Delete report ─────────────────────────────────────────────
+function deleteReport(predId) {
+  if (!confirm('Delete this report permanently?')) return;
+  fetch(`{{ url_for('teacher.delete_report', pred_id=0) }}`.replace('0', predId), {
+    method: 'POST'
+  }).then(() => window.location.reload());
+}
+</script>
+
+</body>
+</html>
